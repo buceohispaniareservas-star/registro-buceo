@@ -209,16 +209,77 @@ const T = {
     ename:'El nombre es obligatorio',eapell:'Los apellidos son obligatorios',ebirth:'La fecha de nacimiento es obligatoria',eemail:'Email no válido',
     eaccept:'Debes aceptar los consentimientos',esig:'Ambas firmas son obligatorias',emed:'Por favor responde todas las preguntas médicas',sending:'Enviando...',
     sname:'Nombre',sbirth:'Nacimiento',slevel:'Nivel',semail:'Email',sphone:'Teléfono',
-    qs:['¿Has tenido alguna enfermedad o cirugía del corazón, o te han dicho que tienes un soplo u otro problema cardíaco?',
-      '¿Tienes tensión arterial alta o tomas medicación para la tensión?',
-      '¿Has tenido alguna vez un derrame cerebral, accidente isquémico transitorio (AIT) o pérdida de consciencia?',
-      '¿Tienes o has tenido alguna enfermedad o problema respiratorio (asma activo, bronquitis crónica, neumotórax espontáneo)?',
-      '¿Estás embarazada o crees que podrías estarlo?',
-      '¿Tienes diabetes?',
-      '¿Tienes problemas crónicos de oídos o sinusitis, o has sido operado/a de oídos, nariz o garganta?',
-      '¿Tienes alguna enfermedad del sistema nervioso (epilepsia, convulsiones, esclerosis múltiple, Parkinson)?',
-      '¿Estás tomando algún medicamento prescrito por un médico (excepto anticonceptivos o antimaláricos)?',
-      '¿Tienes alguna alergia grave, has tenido alguna reacción anafiláctica, o existe alguna otra condición médica que pueda afectar a tu seguridad bajo el agua?']},
+    qs:[
+      'He tenido algún problema respiratorio o de salud relacionado con los pulmones, el corazón o la sangre, o me han diagnosticado de COVID-19.',
+      'Tengo más de 45 años.',
+      'Me cuesta realizar ejercicio moderado (p.ej. caminar 1,6 km en 12 min o nadar 200 m sin descansar) o no he podido realizar actividad física normal por motivos de salud en los últimos 12 meses.',
+      'He tenido algún problema ocular, auditivo o relacionado con las fosas nasales o los senos paranasales.',
+      'Me he operado en los últimos 12 meses o actualmente padezco algún tipo de afectación derivada de una operación quirúrgica anterior.',
+      'He perdido el conocimiento, he tenido dolores de cabeza por migraña, he sufrido convulsiones, un accidente cerebrovascular o una lesión grave en la cabeza, o padezco una enfermedad o lesión neurológica permanente.',
+      'Estoy realizando un tratamiento (o lo he completado en los últimos cinco años) para problemas psicológicos, trastornos de la personalidad, ataques de pánico, adicción a las drogas o al alcohol, o me han diagnosticado una dificultad de aprendizaje.',
+      'He tenido problemas de espalda, hernia, úlceras o diabetes.',
+      'He tenido problemas estomacales o intestinales, incluyendo diarrea recientemente.',
+      'Estoy tomando medicamentos bajo prescripción médica (excepto anticonceptivos o medicamentos antipalúdicos que no sean mefloquina/Lariam).'
+    ],
+    reqmed_title:'CERTIFICADO MÉDICO OBLIGATORIO',
+    reqmed:'Esta respuesta requiere evaluación médica previa. Tu médico debe completar la página 3 del formulario.',
+    det2:'Por favor indica cuál o cuáles de las siguientes:',
+    reqmed_title:'MEDICAL CERTIFICATE REQUIRED',
+    reqmed:'This answer requires prior medical evaluation. Your doctor must complete page 3 of the form.',
+    det2:'Please indicate which of the following apply:',
+    reqmed_title:'CERTIFICAT MÉDICAL OBLIGATOIRE',
+    reqmed:'Cette réponse nécessite une évaluation médicale préalable. Votre médecin doit compléter la page 3 du formulaire.',
+    det2:'Veuillez indiquer lesquelles des situations suivantes s'appliquent :',
+    reqmed_title:'ÄRZTLICHES ATTEST ERFORDERLICH',
+    reqmed:'Diese Antwort erfordert eine ärztliche Voruntersuchung. Ihr Arzt muss Seite 3 des Formulars ausfüllen.',
+    det2:'Bitte geben Sie an, welche der folgenden Aussagen zutreffen:',
+    reqmed_title:'CERTIFICADO MÉDICO OBLIGATORIO',
+    reqmed:'Esta respuesta requiere evaluación médica previa. Tu médico debe completar la página 3 del formulario RSTC.',
+    det2:'Por favor indica cuál o cuáles de las siguientes:',
+    reqmed_title:'MEDICAL CERTIFICATE REQUIRED',
+    reqmed:'This answer requires prior medical evaluation. Your doctor must complete page 3 of the RSTC form.',
+    det2:'Please indicate which of the following apply:',
+    reqmed_title:'CERTIFICAT MÉDICAL OBLIGATOIRE',
+    reqmed:'Cette réponse nécessite une évaluation médicale préalable. Votre médecin doit compléter la page 3 du formulaire RSTC.',
+    det2:'Veuillez indiquer lesquelles des situations suivantes s'appliquent :',
+    reqmed_title:'ÄRZTLICHES ATTEST ERFORDERLICH',
+    reqmed:'Diese Antwort erfordert eine ärztliche Voruntersuchung. Ihr Arzt muss Seite 3 des RSTC-Formulars ausfüllen.',
+    det2:'Bitte geben Sie an, welche der folgenden Aussagen zutreffen:',
+    boxes:{
+      0:['Una cirugía torácica, cardíaca o de válvula cardíaca, un neumotórax (colapso pulmonar) o tengo un stent implantado.',
+         'Actualmente fumo o inhalo nicotina por otros medios.',
+         'Un problema o enfermedad del corazón (angina, dolor en el pecho, insuficiencia cardíaca, infarto, ACV, o estoy en tratamiento cardíaco).',
+         'Bronquitis crónica y tos persistente en los últimos 12 meses, o me han diagnosticado enfisema pulmonar.',
+         'Asma, sibilancias, alergias graves, fiebre del heno u obstrucción de vías respiratorias en los últimos 12 meses que limita mi capacidad física.',
+         'Me han diagnosticado de COVID-19.'],
+      1:['Tengo el colesterol alto.',
+         'Tengo hipertensión arterial.',
+         'Un familiar de primer o segundo grado murió de muerte súbita, enfermedad cardíaca o ACV antes de los 50 años.'],
+      3:['Una cirugía sinusal en los últimos 6 meses.',
+         'Alguna enfermedad auditiva o cirugía del oído, pérdida de audición o alteraciones del equilibrio.',
+         'Sinusitis crónica en los últimos 12 meses.',
+         'Una cirugía ocular en los últimos 3 meses.'],
+      5:['Una lesión en la cabeza con pérdida del conocimiento en los últimos 5 años.',
+         'Lesiones o enfermedades neurológicas persistentes.',
+         'Dolores de cabeza crónicos por migraña en los últimos 12 meses, o tomo medicación para prevenirlos.',
+         'Desvanecimientos o desmayos en los últimos 5 años.',
+         'Epilepsia, ataques o convulsiones, o tomo medicación para prevenirlos.'],
+      6:['Problemas de salud mentales o psicológicos que requieren tratamiento médico o psiquiátrico.',
+         'Un trastorno depresivo mayor, tendencias suicidas, ataques de pánico o trastorno bipolar descontrolado que requiere medicación psiquiátrica.',
+         'Me han diagnosticado una enfermedad de salud mental o trastorno de aprendizaje que requiere atención continua.',
+         'Adicción a las drogas o al alcohol que ha requerido tratamiento en los últimos 5 años.'],
+      7:['En los últimos 6 meses, problemas crónicos de espalda que limitan mi actividad diaria.',
+         'Una cirugía de espalda o columna vertebral en los últimos 12 meses.',
+         'Diabetes tratada con insulina o dieta, o diabetes gestacional, en los últimos 12 meses.',
+         'Una hernia sin corregir que limita mis habilidades físicas.',
+         'Úlceras activas o no tratadas, o tratamiento quirúrgico de una úlcera en los últimos 6 meses.',
+         'Una cirugía de ostomía sin autorización médica para nadar o realizar actividad física.'],
+      8:['Deshidratación que ha requerido intervención médica en los últimos 7 días.',
+         'Úlceras estomacales o intestinales activas o tratamiento quirúrgico de una úlcera en los últimos 6 meses.',
+         'Ardor de estómago frecuente, regurgitación o enfermedad por reflujo gastroesofágico (ERGE).',
+         'Colitis ulcerosa activa o no controlada, o enfermedad de Crohn.',
+         'Una cirugía bariátrica en los últimos 12 meses.']
+    }},
   en:{sub:'Registration form',p1:'Details',p2:'Medical',p3:'Signatures',p4:'Submit',
     s1:'📋 Personal details',s2:'🏥 Medical questionnaire',s3s:'✍️ Service consent',s3r:'🔒 GDPR consent',s4:'✅ Summary & submission',
     s2i:'Please answer honestly. A YES answer does not necessarily prevent you from diving, but may require medical clearance.',
@@ -275,16 +336,53 @@ const T = {
     ename:'Vorname ist erforderlich',eapell:'Nachname ist erforderlich',ebirth:'Geburtsdatum ist erforderlich',eemail:'Ungültige E-Mail',
     eaccept:'Sie müssen den Einwilligungen zustimmen',esig:'Beide Unterschriften sind erforderlich',emed:'Bitte beantworten Sie alle medizinischen Fragen',sending:'Wird gesendet...',
     sname:'Name',sbirth:'Geb.',slevel:'Niveau',semail:'E-Mail',sphone:'Telefon',
-    qs:['Haben Sie jemals eine Herzerkrankung, Herzoperation oder ein Herzgeräusch gehabt?',
-      'Haben Sie Bluthochdruck oder nehmen Sie Medikamente dagegen?',
-      'Hatten Sie jemals einen Schlaganfall, eine TIA oder einen Bewusstseinsverlust?',
-      'Haben oder hatten Sie Lungen- oder Atemprobleme (aktives Asthma, chronische Bronchitis, Spontanpneumothorax)?',
-      'Sind Sie schwanger oder könnten Sie schwanger sein?',
-      'Haben Sie Diabetes?',
-      'Haben Sie chronische Ohren- oder Sinusprobleme oder wurden Sie operiert?',
-      'Haben Sie eine Erkrankung des Nervensystems (Epilepsie, Krampfanfälle, MS, Parkinson)?',
-      'Nehmen Sie derzeit verschreibungspflichtige Medikamente (außer Verhütungsmittel oder Malariamittel)?',
-      'Haben Sie eine schwere Allergie oder gibt es einen anderen Gesundheitszustand, der Ihre Sicherheit unter Wasser beeinträchtigen könnte?']}
+    qs:[
+      'Ich hatte oder wurde diagnostiziert mit einem Atemwegs- oder Gesundheitsproblem im Zusammenhang mit Lungen, Herz oder Blut, oder ich wurde mit COVID-19 diagnostiziert.',
+      'Ich bin über 45 Jahre alt.',
+      'Ich habe Schwierigkeiten, moderate körperliche Aktivität auszuführen (z.B. 1,6 km in 12 Min. gehen oder 200 m ohne Pause schwimmen), oder konnte in den letzten 12 Monaten aus gesundheitlichen Gründen keine normale körperliche Aktivität ausüben.',
+      'Ich hatte ein Problem mit meinen Augen, Ohren, Nasengängen oder Nebenhöhlen.',
+      'Ich wurde in den letzten 12 Monaten operiert oder leide derzeit unter Nachwirkungen einer früheren Operation.',
+      'Ich hatte einen Bewusstseinsverlust, Migräne, Krampfanfälle, einen Schlaganfall oder eine schwere Kopfverletzung, oder habe eine anhaltende neurologische Erkrankung.',
+      'Ich erhalte (oder habe in den letzten 5 Jahren erhalten) eine Behandlung für psychologische Probleme, Persönlichkeitsstörungen, Panikattacken, Drogen- oder Alkoholabhängigkeit, oder mir wurde eine Lernschwäche diagnostiziert.',
+      'Ich hatte Rückenprobleme, einen Bruch, Magengeschwüre oder Diabetes.',
+      'Ich hatte Magen- oder Darmprobleme, einschließlich kürzlichem Durchfall.',
+      'Ich nehme verschreibungspflichtige Medikamente (außer Verhütungsmittel oder Malariamittel, die nicht Mefloquin/Lariam sind).'
+    ],
+    boxes:{
+      0:['Eine Brust-, Herz- oder Herzklappenoperation, ein Pneumothorax oder ich habe einen Stent implantiert.',
+         'Ich rauche derzeit oder nehme Nikotin auf andere Weise auf.',
+         'Eine Herzerkrankung (Angina, Brustschmerzen bei Anstrengung, Herzinsuffizienz, Herzinfarkt, Schlaganfall, oder ich bin in kardiologischer Behandlung).',
+         'Chronische Bronchitis und anhaltender Husten in den letzten 12 Monaten, oder diagnostiziertes Lungenemphysem.',
+         'Asthma, Keuchen, schwere Allergien, Heuschnupfen oder Atemwegsobstruktion in den letzten 12 Monaten, die meine körperliche Leistungsfähigkeit einschränkt.',
+         'Ich wurde mit COVID-19 diagnostiziert.'],
+      1:['Ich habe hohen Cholesterinspiegel.',
+         'Ich habe Bluthochdruck.',
+         'Ein Verwandter ersten oder zweiten Grades starb vor dem 50. Lebensjahr an plötzlichem Tod, Herzerkrankung oder Schlaganfall.'],
+      3:['Eine Nasennebenhoehlen-OP in den letzten 6 Monaten.',
+         'Eine Ohrerkrankung oder Ohroperation, Hörverlust oder Gleichgewichtsstörungen.',
+         'Chronische Sinusitis in den letzten 12 Monaten.',
+         'Eine Augenoperation in den letzten 3 Monaten.'],
+      5:['Eine Kopfverletzung mit Bewusstseinsverlust in den letzten 5 Jahren.',
+         'Anhaltende neurologische Verletzungen oder Erkrankungen.',
+         'Chronische Migräne in den letzten 12 Monaten, oder ich nehme Medikamente zur Vorbeugung.',
+         'Ohnmacht oder Bewusstlosigkeit in den letzten 5 Jahren.',
+         'Epilepsie, Anfälle oder Krämpfe, oder ich nehme Medikamente zur Vorbeugung.'],
+      6:['Verhaltens-, geistige oder psychische Gesundheitsprobleme, die medizinische oder psychiatrische Behandlung erfordern.',
+         'Schwere Depression, Suizidgedanken, Panikattacken oder unkontrollierte bipolare Störung, die psychiatrische Medikation erfordert.',
+         'Diagnostizierte psychische Erkrankung oder Lernschwäche, die fortlaufende Betreuung erfordert.',
+         'Drogen- oder Alkoholabhängigkeit mit Behandlung in den letzten 5 Jahren.'],
+      7:['Chronische Rückenprobleme, die meine täglichen Aktivitäten in den letzten 6 Monaten einschränken.',
+         'Rücken- oder Wirbelsäulenoperation in den letzten 12 Monaten.',
+         'Diabetes (insulinpflichtig oder diätetisch behandelt) oder Schwangerschaftsdiabetes in den letzten 12 Monaten.',
+         'Unkorrigierter Bruch, der meine körperlichen Fähigkeiten einschränkt.',
+         'Aktive oder unbehandelte Magengeschwüre oder chirurgische Behandlung eines Geschwürs in den letzten 6 Monaten.',
+         'Stoma-OP ohne ärztliche Genehmigung zum Schwimmen oder körperlicher Aktivität.'],
+      8:['Dehydration mit medizinischem Eingriff in den letzten 7 Tagen.',
+         'Aktive oder unbehandelte Magen- oder Darmgeschwüre oder chirurgische Behandlung in den letzten 6 Monaten.',
+         'Häufiges Sodbrennen, Aufstoßen oder gastroösophageale Refluxkrankheit (GERD).',
+         'Aktive oder unkontrollierte Colitis ulcerosa oder Morbus Crohn.',
+         'Magenverkleinerungsoperation in den letzten 12 Monaten.']
+    }}
 };
 
 let lang='es', step=1;
@@ -321,21 +419,48 @@ function buildMed(){
   c.innerHTML='';
   t.qs.forEach((q,i)=>{
     const a=ans[i],isY=a===true,isN=a===false;
+    const boxes=t.boxes&&t.boxes[i]?t.boxes[i]:null;
+    const needsMed=[2,4,9]; // questions that require medical if YES but have no box
     const d=document.createElement('div');
     d.className='med-q'+(isY?' yes':isN?' no':'');
+    let condHtml='';
+    if(isY){
+      if(boxes){
+        condHtml=`<div class="med-cond show" id="mc${i}">
+          <div style="font-size:11px;font-weight:700;color:#7d5a00;margin-bottom:8px">${t.det2||'Por favor indica cuál/cuáles:'}</div>
+          ${boxes.map((sb,j)=>`
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(180,140,0,.15)">
+              <input type="checkbox" id="cb${i}_${j}" onchange="toggleBox(${i},${j},this.checked)"
+                ${(boxAns[i]&&boxAns[i][j])?'checked':''} style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--primary)">
+              <label for="cb${i}_${j}" style="font-size:12px;color:var(--text);cursor:pointer;line-height:1.4">${sb}</label>
+            </div>`).join('')}
+        </div>`;
+      } else {
+        condHtml=`<div class="med-cond show" id="mc${i}">
+          <div style="font-size:13px;color:#7d0000;padding:12px 14px;background:#ffe4e4;border-radius:8px;border:2px solid #c0392b;line-height:1.6">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">⚠️ ${t.reqmed_title||'CERTIFICADO MÉDICO OBLIGATORIO'}</div>
+            ${t.reqmed||'Esta respuesta requiere evaluación médica previa. Debes obtener la aprobación de tu médico antes de bucear. Entrega a tu médico las 3 páginas del formulario RSTC para que complete el examen médico.'}
+          </div>
+        </div>`;
+      }
+    }
     d.innerHTML=`<div class="med-q-text"><span class="med-qn">${i+1}.</span>${q}</div>
       <div class="med-btns">
         <button class="med-btn med-btn-yes${isY?' sel':''}" onclick="setAns(${i},true)">${t.yes}</button>
         <button class="med-btn med-btn-no${isN?' sel':''}" onclick="setAns(${i},false)">${t.no}</button>
       </div>
-      <div class="med-cond${isY?' show':''}" id="mc${i}">
-        <label>${t.det}</label>
-        <textarea id="md${i}" onchange="dets[${i}]=this.value">${dets[i]||''}</textarea>
-      </div>`;
+      ${condHtml}`;
     c.appendChild(d);
   });
 }
 
+const boxAns={};
+function toggleBox(qi,bi,checked){
+  if(!boxAns[qi])boxAns[qi]={};
+  boxAns[qi][bi]=checked;
+}
+
+// reqmed already embedded in buildMed via t.reqmed
 function setAns(i,v){
   const md=document.getElementById('md'+i);if(md)dets[i]=md.value;
   ans[i]=v; buildMed();
@@ -472,3 +597,4 @@ window.addEventListener('load',()=>{initSig('srv');initSig('rgpd');buildMed();ap
 </script>
 </body>
 </html>
+
