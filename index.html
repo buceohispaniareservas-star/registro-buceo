@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Registro de Cliente — Centro de Buceo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#0077b6;--navy:#023e8a;--bg:#f0f4f8;--card:#fff;--border:#ccd9e3;--text:#1a2b3c;--text2:#4a6580;--text3:#8fa8be;--green:#2d9b6f;--red:#c0392b;--yellow:#b8860b;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+.header{background:var(--navy);padding:20px;text-align:center}
+.header h1{color:#fff;font-size:19px;font-weight:700}
+.header p{color:rgba(255,255,255,.7);font-size:12px;margin-top:3px}
+.lang-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.lang-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.lang-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.progress-bar{background:#fff;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.progress-steps{display:flex;align-items:center;max-width:600px;margin:0 auto}
+.p-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.p-step:not(:last-child)::after{content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.p-step.done::after{background:var(--primary)}
+.p-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);position:relative;z-index:1;transition:all .2s}
+.p-step.done .p-dot{background:var(--primary);border-color:var(--primary);color:#fff}
+.p-step.active .p-dot{border-color:var(--primary);color:var(--primary)}
+.p-label{font-size:10px;color:var(--text3);text-align:center;font-weight:500}
+.p-step.done .p-label,.p-step.active .p-label{color:var(--primary)}
+.form-wrap{max-width:640px;margin:0 auto;padding:16px}
+.step-panel{display:none}
+.step-panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:8px;padding:10px 12px;font-size:15px;outline:none;transition:border .15s;font-family:inherit;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%234a6580' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.form-group textarea{resize:vertical;min-height:68px}
+.required{color:var(--red)}
+.field-error{font-size:11px;color:var(--red);margin-top:3px;display:none}
+.field-error.show{display:block}
+.input-error{border-color:var(--red)!important}
+.med-q{border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;transition:all .15s}
+.med-q.yes{border-color:#e6ac00;background:#fffbf0}
+.med-q.no{border-color:#a8d5b5;background:#f5fff9}
+.med-q-text{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:10px}
+.med-qn{font-weight:700;color:var(--primary);margin-right:4px}
+.med-btns{display:flex;gap:8px}
+.med-btn{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.med-btn-yes.sel{background:#fff3cd;border-color:#e6ac00;color:#7d5a00}
+.med-btn-no.sel{background:#d4edda;border-color:var(--green);color:#155724}
+.med-cond{margin-top:10px;display:none}
+.med-cond.show{display:block}
+.med-cond label{font-size:11px;font-weight:600;color:#7d5a00;display:block;margin-bottom:4px}
+.med-cond textarea{width:100%;border:1.5px solid #e6ac00;border-radius:6px;padding:8px;font-size:13px;font-family:inherit;outline:none;background:#fff;resize:vertical;min-height:54px}
+.med-warn{background:#fff3cd;border:1px solid #e6ac00;border-radius:8px;padding:12px;font-size:12px;color:#7d5a00;margin-top:12px;display:none;gap:8px;line-height:1.5;align-items:flex-start}
+.med-warn.show{display:flex}
+.consent-text{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6;max-height:110px;overflow-y:auto;margin-bottom:12px}
+.sig-wrap{border:2px dashed var(--border);border-radius:10px;background:#fafcff;position:relative;overflow:hidden;touch-action:none}
+.sig-canvas{display:block;width:100%;cursor:crosshair;touch-action:none;height:160px}
+@media(min-width:600px){.sig-canvas{height:200px}}
+.sig-ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text3);font-size:13px;pointer-events:none;text-align:center;line-height:1.6}
+.sig-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:#fff}
+.sig-clear{background:none;border:1.5px solid var(--border);color:var(--text2);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+.sig-ok{font-size:12px;color:var(--green);font-weight:700;display:none}
+.summary-row{font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.summary-row strong{color:var(--text);min-width:100px;flex-shrink:0}
+.accept-box{margin-top:14px;padding:14px;background:#f0f8ff;border-radius:8px;border:1px solid #b8d4e8}
+.accept-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--text2);line-height:1.5}
+.accept-label input{margin-top:2px;width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:var(--primary)}
+.form-footer{display:flex;gap:10px;margin-top:8px}
+.btn-back{flex:1;padding:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-next{flex:2;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-next:disabled{background:var(--border);cursor:not-allowed}
+.success-card{text-align:center;padding:40px 20px}
+.success-icon{font-size:56px;margin-bottom:16px}
+.success-card h2{font-size:22px;color:var(--green);margin-bottom:10px}
+.success-card p{font-size:14px;color:var(--text2);line-height:1.7;max-width:400px;margin:0 auto}
+@media(max-width:600px){.card{padding:14px}.header h1{font-size:16px}.p-label{display:none}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🤿 Centro de Buceo</h1>
+  <p id="h-sub">Formulario de registro</p>
+</div>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('es',this)">🇪🇸 Español</button>
+  <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 English</button>
+  <button class="lang-btn" onclick="setLang('fr',this)">🇫🇷 Français</button>
+  <button class="lang-btn" onclick="setLang('de',this)">🇩🇪 Deutsch</button>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="p-step active" id="ps1"><div class="p-dot">1</div><div class="p-label" id="pl1">Datos</div></div>
+    <div class="p-step" id="ps2"><div class="p-dot">2</div><div class="p-label" id="pl2">Médico</div></div>
+    <div class="p-step" id="ps3"><div class="p-dot">3</div><div class="p-label" id="pl3">Firmas</div></div>
+    <div class="p-step" id="ps4"><div class="p-dot">4</div><div class="p-label" id="pl4">Envío</div></div>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- PASO 1: DATOS -->
+  <div class="step-panel active" id="step1">
+    <div class="card">
+      <div class="card-title" id="s1t">📋 Datos personales</div>
+      <div class="form-row">
+        <div class="form-group"><label id="ln">Nombre <span class="required">*</span></label><input id="fn" type="text" autocomplete="given-name"><div class="field-error" id="en"></div></div>
+        <div class="form-group"><label id="la">Apellidos <span class="required">*</span></label><input id="fa" type="text" autocomplete="family-name"><div class="field-error" id="ea"></div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="lb">Fecha de nacimiento <span class="required">*</span></label><input id="fb" type="date"><div class="field-error" id="eb"></div></div>
+        <div class="form-group"><label id="ld">DNI / Pasaporte</label><input id="fd" type="text"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="le">Email <span class="required">*</span></label><input id="fe" type="email" autocomplete="email"><div class="field-error" id="ee"></div></div>
+        <div class="form-group"><label id="lp">Teléfono</label><input id="fp" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="form-group">
+        <label id="ll">Nivel de buceo</label>
+        <select id="fl">
+          <option value="">—</option>
+          <option value="Sin experiencia">Sin experiencia / No diver</option>
+          <option value="Bautismo">Bautismo / Discovery Dive</option>
+          <option value="Open Water (OW)">Open Water (OW)</option>
+          <option value="Advanced (AOW)">Advanced Open Water (AOW)</option>
+          <option value="Rescue Diver">Rescue Diver</option>
+          <option value="Divemaster">Divemaster</option>
+          <option value="Instructor">Instructor</option>
+          <option value="Snorkel">Snorkel</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer"><button class="btn-next" onclick="go(2)" id="bn1">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 2: MÉDICO -->
+  <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-title" id="s2t">🏥 Cuestionario médico</div>
+      <p id="s2i" style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px;padding:10px;background:#f8fafc;border-radius:8px;border-left:3px solid var(--primary)"></p>
+      <div id="medqs"></div>
+      <div class="med-warn" id="mwarn"><span style="font-size:20px;flex-shrink:0">⚠️</span><span id="mwt"></span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(1)" id="bb2">← Atrás</button><button class="btn-next" onclick="go(3)" id="bn2">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 3: FIRMAS -->
+  <div class="step-panel" id="step3">
+    <div class="card">
+      <div class="card-title" id="s3ts">✍️ Consentimiento de servicios</div>
+      <div class="consent-text">Declaro haber sido informado/a de las condiciones del servicio y acepto los términos y condiciones establecidos por el centro de buceo, incluyendo los riesgos inherentes a la práctica del buceo recreativo. / I declare that I have been informed of the service conditions and accept the terms and conditions established by the dive centre, including the inherent risks of recreational diving.</div>
+      <label style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px;display:block" id="lss">Firma aquí / Sign here</label>
+      <div class="sig-wrap"><canvas class="sig-canvas" id="sig-srv"></canvas><div class="sig-ph" id="sig-srv-ph">✍️<br>Firma con el dedo o el ratón<br>Sign with finger or mouse</div></div>
+      <div class="sig-bar"><button class="sig-clear" onclick="clearSig('srv')" id="bcs">Borrar / Clear</button><span class="sig-ok" id="sig-srv-ok">✓ Firmado / Signed</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="s3tr">🔒 Consentimiento RGPD / GDPR</div>
+      <div class="consent-text">Consiento el tratamiento de mis datos personales conforme al RGPD (UE) 2016/679. Los datos serán utilizados exclusivamente para la gestión de actividades del centro de buceo. / I consent to the processing of my personal data in accordance with GDPR (EU) 2016/679. Data will be used exclusively for managing dive centre activities.</div>
+      <label style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px;display:block" id="lsr">Firma aquí / Sign here</label>
+      <div class="sig-wrap"><canvas class="sig-canvas" id="sig-rgpd"></canvas><div class="sig-ph" id="sig-rgpd-ph">✍️<br>Firma con el dedo o el ratón<br>Sign with finger or mouse</div></div>
+      <div class="sig-bar"><button class="sig-clear" onclick="clearSig('rgpd')" id="bcr">Borrar / Clear</button><span class="sig-ok" id="sig-rgpd-ok">✓ Firmado / Signed</span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(2)" id="bb3">← Atrás</button><button class="btn-next" onclick="go(4)" id="bn3">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 4: ENVÍO -->
+  <div class="step-panel" id="step4">
+    <div class="card">
+      <div class="card-title" id="s4t">✅ Resumen y envío</div>
+      <div id="sumbox"></div>
+      <div class="accept-box">
+        <label class="accept-label"><input type="checkbox" id="faccept"><span id="lacct"></span></label>
+      </div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(3)" id="bb4">← Atrás</button><button class="btn-next" onclick="enviar()" id="bsend">Enviar registro</button></div>
+  </div>
+
+  <!-- ÉXITO -->
+  <div class="step-panel" id="step5">
+    <div class="card success-card">
+      <div class="success-icon">🤿</div>
+      <h2 id="s5t">¡Registro completado!</h2>
+      <p id="s5p">Tus datos han sido registrados correctamente. ¡Te esperamos!</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaPveeAoVM7ZaNQdoc7zKMKQpFB_ltAXlvCgiglTbard7Mcqe4vLByHQu9nN2vs6U/exec';
+
+const T = {
+  es:{sub:'Formulario de registro',p1:'Datos',p2:'Médico',p3:'Firmas',p4:'Envío',
+    s1:'📋 Datos personales',s2:'🏥 Cuestionario médico',s3s:'✍️ Consentimiento de servicios',s3r:'🔒 Consentimiento RGPD',s4:'✅ Resumen y envío',
+    s2i:'Por favor responde con sinceridad. Una respuesta SÍ no impide la práctica del buceo, pero puede requerir la aprobación de un médico.',
+    ln:'Nombre',la:'Apellidos',lb:'Fecha de nacimiento',ld:'DNI / Pasaporte',le:'Email',lp:'Teléfono',ll:'Nivel de buceo',
+    yes:'Sí',no:'No',det:'Por favor da más detalles:',
+    warn:'Algunas de tus respuestas requieren evaluación médica previa. El centro se pondrá en contacto contigo antes de la actividad.',
+    next:'Siguiente →',back:'← Atrás',send:'Enviar registro',clear:'Borrar',signed:'✓ Firmado',
+    acct:'He leído y acepto todos los consentimientos. Declaro que los datos proporcionados son verídicos.',
+    s5t:'¡Registro completado!',s5p:'Tus datos han sido registrados correctamente. ¡Te esperamos en el agua!',
+    ename:'El nombre es obligatorio',eapell:'Los apellidos son obligatorios',ebirth:'La fecha de nacimiento es obligatoria',eemail:'Email no válido',
+    eaccept:'Debes aceptar los consentimientos',esig:'Ambas firmas son obligatorias',emed:'Por favor responde todas las preguntas médicas',sending:'Enviando...',
+    sname:'Nombre',sbirth:'Nacimiento',slevel:'Nivel',semail:'Email',sphone:'Teléfono',
+    qs:['¿Has tenido alguna enfermedad o cirugía del corazón, o te han dicho que tienes un soplo u otro problema cardíaco?',
+      '¿Tienes tensión arterial alta o tomas medicación para la tensión?',
+      '¿Has tenido alguna vez un derrame cerebral, accidente isquémico transitorio (AIT) o pérdida de consciencia?',
+      '¿Tienes o has tenido alguna enfermedad o problema respiratorio (asma activo, bronquitis crónica, neumotórax espontáneo)?',
+      '¿Estás embarazada o crees que podrías estarlo?',
+      '¿Tienes diabetes?',
+      '¿Tienes problemas crónicos de oídos o sinusitis, o has sido operado/a de oídos, nariz o garganta?',
+      '¿Tienes alguna enfermedad del sistema nervioso (epilepsia, convulsiones, esclerosis múltiple, Parkinson)?',
+      '¿Estás tomando algún medicamento prescrito por un médico (excepto anticonceptivos o antimaláricos)?',
+      '¿Tienes alguna alergia grave, has tenido alguna reacción anafiláctica, o existe alguna otra condición médica que pueda afectar a tu seguridad bajo el agua?']},
+  en:{sub:'Registration form',p1:'Details',p2:'Medical',p3:'Signatures',p4:'Submit',
+    s1:'📋 Personal details',s2:'🏥 Medical questionnaire',s3s:'✍️ Service consent',s3r:'🔒 GDPR consent',s4:'✅ Summary & submission',
+    s2i:'Please answer honestly. A YES answer does not necessarily prevent you from diving, but may require medical clearance.',
+    ln:'First name',la:'Last name',lb:'Date of birth',ld:'ID / Passport',le:'Email',lp:'Phone',ll:'Diving level',
+    yes:'Yes',no:'No',det:'Please provide more details:',
+    warn:'Some of your answers require prior medical evaluation. The centre will contact you before the activity.',
+    next:'Next →',back:'← Back',send:'Submit registration',clear:'Clear',signed:'✓ Signed',
+    acct:'I have read and accept all consents. I declare that the information provided is true and accurate.',
+    s5t:'Registration complete!',s5p:'Your details have been registered successfully. See you in the water!',
+    ename:'First name is required',eapell:'Last name is required',ebirth:'Date of birth is required',eemail:'Invalid email address',
+    eaccept:'You must accept the consents',esig:'Both signatures are required',emed:'Please answer all medical questions',sending:'Sending...',
+    sname:'Name',sbirth:'Born',slevel:'Level',semail:'Email',sphone:'Phone',
+    qs:['Have you ever had or been told you have a heart disease, heart surgery, or heart murmur?',
+      'Do you have high blood pressure or take medication for blood pressure?',
+      'Have you ever had a stroke, transient ischaemic attack (TIA), or loss of consciousness?',
+      'Do you have or have you had any lung or breathing problems (active asthma, chronic bronchitis, spontaneous pneumothorax)?',
+      'Are you pregnant or do you think you might be pregnant?',
+      'Do you have diabetes?',
+      'Do you have chronic ear or sinus problems, or have you had surgery on your ears, nose or throat?',
+      'Do you have any nervous system disorder (epilepsy, seizures, multiple sclerosis, Parkinson\'s disease)?',
+      'Are you currently taking any prescription medication (other than contraceptives or anti-malarials)?',
+      'Do you have any severe allergy, have you had an anaphylactic reaction, or is there any other medical condition that may affect your safety underwater?']},
+  fr:{sub:'Formulaire d\'inscription',p1:'Données',p2:'Médical',p3:'Signatures',p4:'Envoi',
+    s1:'📋 Données personnelles',s2:'🏥 Questionnaire médical',s3s:'✍️ Consentement services',s3r:'🔒 Consentement RGPD',s4:'✅ Résumé & envoi',
+    s2i:'Veuillez répondre honnêtement. Une réponse OUI n\'empêche pas nécessairement la plongée, mais peut nécessiter un avis médical.',
+    ln:'Prénom',la:'Nom',lb:'Date de naissance',ld:'CNI / Passeport',le:'Email',lp:'Téléphone',ll:'Niveau de plongée',
+    yes:'Oui',no:'Non',det:'Veuillez donner plus de détails :',
+    warn:'Certaines réponses nécessitent une évaluation médicale préalable. Le centre vous contactera avant l\'activité.',
+    next:'Suivant →',back:'← Retour',send:'Envoyer l\'inscription',clear:'Effacer',signed:'✓ Signé',
+    acct:'J\'ai lu et j\'accepte tous les consentements. Je déclare que les informations fournies sont véridiques.',
+    s5t:'Inscription complète !',s5p:'Vos données ont été enregistrées. À bientôt dans l\'eau !',
+    ename:'Le prénom est obligatoire',eapell:'Le nom est obligatoire',ebirth:'La date de naissance est obligatoire',eemail:'Email invalide',
+    eaccept:'Vous devez accepter les consentements',esig:'Les deux signatures sont obligatoires',emed:'Veuillez répondre à toutes les questions médicales',sending:'Envoi...',
+    sname:'Nom',sbirth:'Né(e)',slevel:'Niveau',semail:'Email',sphone:'Téléphone',
+    qs:['Avez-vous eu ou avez-vous une maladie cardiaque, une chirurgie cardiaque ou un souffle au cœur ?',
+      'Avez-vous de l\'hypertension artérielle ou prenez-vous des médicaments pour la tension ?',
+      'Avez-vous jamais eu un AVC, un AIT ou une perte de connaissance ?',
+      'Avez-vous ou avez-vous eu des problèmes pulmonaires ou respiratoires (asthme actif, bronchite chronique, pneumothorax spontané) ?',
+      'Êtes-vous enceinte ou pensez-vous pouvoir l\'être ?',
+      'Avez-vous le diabète ?',
+      'Avez-vous des problèmes chroniques d\'oreilles ou de sinus, ou avez-vous été opéré(e) des oreilles, du nez ou de la gorge ?',
+      'Avez-vous une maladie du système nerveux (épilepsie, convulsions, sclérose en plaques, Parkinson) ?',
+      'Prenez-vous actuellement des médicaments sur ordonnance (sauf contraceptifs ou antipaludéens) ?',
+      'Avez-vous une allergie grave, avez-vous eu une réaction anaphylactique ou existe-t-il toute autre condition médicale pouvant affecter votre sécurité sous l\'eau ?']},
+  de:{sub:'Anmeldeformular',p1:'Daten',p2:'Medizin',p3:'Unterschriften',p4:'Senden',
+    s1:'📋 Persönliche Daten',s2:'🏥 Medizinischer Fragebogen',s3s:'✍️ Einwilligung Leistungen',s3r:'🔒 Einwilligung DSGVO',s4:'✅ Zusammenfassung',
+    s2i:'Bitte antworten Sie ehrlich. Ein JA schließt das Tauchen nicht unbedingt aus, kann aber eine ärztliche Freigabe erfordern.',
+    ln:'Vorname',la:'Nachname',lb:'Geburtsdatum',ld:'Ausweis / Reisepass',le:'E-Mail',lp:'Telefon',ll:'Tauchniveau',
+    yes:'Ja',no:'Nein',det:'Bitte geben Sie weitere Details an:',
+    warn:'Einige Antworten erfordern eine ärztliche Voruntersuchung. Das Zentrum wird Sie kontaktieren.',
+    next:'Weiter →',back:'← Zurück',send:'Registrierung senden',clear:'Löschen',signed:'✓ Unterschrieben',
+    acct:'Ich habe alle Einwilligungen gelesen und akzeptiere sie. Ich erkläre, dass die Angaben der Wahrheit entsprechen.',
+    s5t:'Registrierung abgeschlossen!',s5p:'Ihre Daten wurden erfolgreich registriert. Wir freuen uns auf Sie!',
+    ename:'Vorname ist erforderlich',eapell:'Nachname ist erforderlich',ebirth:'Geburtsdatum ist erforderlich',eemail:'Ungültige E-Mail',
+    eaccept:'Sie müssen den Einwilligungen zustimmen',esig:'Beide Unterschriften sind erforderlich',emed:'Bitte beantworten Sie alle medizinischen Fragen',sending:'Wird gesendet...',
+    sname:'Name',sbirth:'Geb.',slevel:'Niveau',semail:'E-Mail',sphone:'Telefon',
+    qs:['Haben Sie jemals eine Herzerkrankung, Herzoperation oder ein Herzgeräusch gehabt?',
+      'Haben Sie Bluthochdruck oder nehmen Sie Medikamente dagegen?',
+      'Hatten Sie jemals einen Schlaganfall, eine TIA oder einen Bewusstseinsverlust?',
+      'Haben oder hatten Sie Lungen- oder Atemprobleme (aktives Asthma, chronische Bronchitis, Spontanpneumothorax)?',
+      'Sind Sie schwanger oder könnten Sie schwanger sein?',
+      'Haben Sie Diabetes?',
+      'Haben Sie chronische Ohren- oder Sinusprobleme oder wurden Sie operiert?',
+      'Haben Sie eine Erkrankung des Nervensystems (Epilepsie, Krampfanfälle, MS, Parkinson)?',
+      'Nehmen Sie derzeit verschreibungspflichtige Medikamente (außer Verhütungsmittel oder Malariamittel)?',
+      'Haben Sie eine schwere Allergie oder gibt es einen anderen Gesundheitszustand, der Ihre Sicherheit unter Wasser beeinträchtigen könnte?']}
+};
+
+let lang='es', step=1;
+const ans=new Array(10).fill(null), dets=new Array(10).fill('');
+
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  apply();
+}
+
+function apply(){
+  const t=T[lang];
+  const ids={'h-sub':t.sub,'pl1':t.p1,'pl2':t.p2,'pl3':t.p3,'pl4':t.p4,
+    's1t':t.s1,'s2t':t.s2,'s3ts':t.s3s,'s3tr':t.s3r,'s4t':t.s4,'s2i':t.s2i,'mwt':t.warn,
+    'bn1':t.next,'bb2':t.back,'bn2':t.next,'bb3':t.back,'bn3':t.next,'bb4':t.back,'bsend':t.send,
+    'bcs':t.clear,'bcr':t.clear,'sig-srv-ok':t.signed,'sig-rgpd-ok':t.signed,'lacct':t.acct,
+    's5t':t.s5t,'s5p':t.s5p};
+  Object.entries(ids).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  document.getElementById('ln').innerHTML=t.ln+' <span class="required">*</span>';
+  document.getElementById('la').innerHTML=t.la+' <span class="required">*</span>';
+  document.getElementById('lb').innerHTML=t.lb+' <span class="required">*</span>';
+  document.getElementById('ld').textContent=t.ld;
+  document.getElementById('le').innerHTML=t.le+' <span class="required">*</span>';
+  document.getElementById('lp').textContent=t.lp;
+  document.getElementById('ll').textContent=t.ll;
+  buildMed();
+  updateSum();
+}
+
+function buildMed(){
+  const t=T[lang],c=document.getElementById('medqs');
+  c.innerHTML='';
+  t.qs.forEach((q,i)=>{
+    const a=ans[i],isY=a===true,isN=a===false;
+    const d=document.createElement('div');
+    d.className='med-q'+(isY?' yes':isN?' no':'');
+    d.innerHTML=`<div class="med-q-text"><span class="med-qn">${i+1}.</span>${q}</div>
+      <div class="med-btns">
+        <button class="med-btn med-btn-yes${isY?' sel':''}" onclick="setAns(${i},true)">${t.yes}</button>
+        <button class="med-btn med-btn-no${isN?' sel':''}" onclick="setAns(${i},false)">${t.no}</button>
+      </div>
+      <div class="med-cond${isY?' show':''}" id="mc${i}">
+        <label>${t.det}</label>
+        <textarea id="md${i}" onchange="dets[${i}]=this.value">${dets[i]||''}</textarea>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function setAns(i,v){
+  const md=document.getElementById('md'+i);if(md)dets[i]=md.value;
+  ans[i]=v; buildMed();
+  document.getElementById('mwarn').classList.toggle('show',ans.some(a=>a===true));
+}
+
+function initSig(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  let drawing=false;
+  function resize(){
+    const w=cv.offsetWidth,h=cv.offsetHeight||160,dpr=window.devicePixelRatio||1;
+    cv.width=w*dpr;cv.height=h*dpr;ctx.scale(dpr,dpr);
+    ctx.strokeStyle='#1a2b3c';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
+  }
+  resize(); new ResizeObserver(resize).observe(cv);
+  function pos(e){const r=cv.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+  function start(e){e.preventDefault();drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();
+    document.getElementById('sig-'+id+'-ph').style.display='none';
+    document.getElementById('sig-'+id+'-ok').style.display='inline';}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);cv.addEventListener('mouseup',end);
+  cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});cv.addEventListener('touchend',end);
+}
+
+function clearSig(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  document.getElementById('sig-'+id+'-ph').style.display='';
+  document.getElementById('sig-'+id+'-ok').style.display='none';
+}
+
+function sigEmpty(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  return !ctx.getImageData(0,0,cv.width,cv.height).data.some(x=>x!==0);
+}
+
+function go(n){
+  const t=T[lang];
+  if(n===2&&step===1&&!v1())return;
+  if(n===3&&step===2&&!v2())return;
+  if(n===4&&step===3&&!v3())return;
+  if(n===4)updateSum();
+  document.getElementById('step'+step).classList.remove('active');
+  step=n;
+  document.getElementById('step'+step).classList.add('active');
+  for(let i=1;i<=4;i++){
+    const p=document.getElementById('ps'+i);
+    p.classList.remove('active','done');
+    if(i<n)p.classList.add('done');else if(i===n)p.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function v1(){
+  const t=T[lang];let ok=true;
+  ['fn','fa','fb','fe'].forEach(id=>document.getElementById(id).classList.remove('input-error'));
+  ['en','ea','eb','ee'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  if(!document.getElementById('fn').value.trim()){showE('fn','en',t.ename);ok=false;}
+  if(!document.getElementById('fa').value.trim()){showE('fa','ea',t.eapell);ok=false;}
+  if(!document.getElementById('fb').value){showE('fb','eb',t.ebirth);ok=false;}
+  const em=document.getElementById('fe').value.trim();
+  if(!em||!em.includes('@')){showE('fe','ee',t.eemail);ok=false;}
+  return ok;
+}
+
+function v2(){
+  const t=T[lang];
+  ans.forEach((a,i)=>{const md=document.getElementById('md'+i);if(md)dets[i]=md.value;});
+  if(ans.some(a=>a===null)){alert(t.emed);return false;}
+  return true;
+}
+
+function v3(){
+  const t=T[lang];
+  if(sigEmpty('srv')||sigEmpty('rgpd')){alert(t.esig);return false;}
+  return true;
+}
+
+function showE(inp,err,msg){
+  document.getElementById(inp).classList.add('input-error');
+  const e=document.getElementById(err);e.textContent=msg;e.classList.add('show');
+}
+
+function updateSum(){
+  const t=T[lang];
+  const nm=(document.getElementById('fn').value||'')+' '+(document.getElementById('fa').value||'');
+  const rows=[
+    [t.sname,nm.trim()],[t.sbirth,document.getElementById('fb').value],
+    [t.slevel,document.getElementById('fl').value],[t.semail,document.getElementById('fe').value],
+    [t.sphone,document.getElementById('fp').value]
+  ];
+  const yc=ans.filter(a=>a===true).length;
+  document.getElementById('sumbox').innerHTML=rows.filter(r=>r[1]).map(r=>
+    `<div class="summary-row"><strong>${r[0]}</strong><span>${r[1]}</span></div>`).join('')+
+    (yc>0?`<div class="summary-row" style="color:var(--yellow)"><strong>⚠️</strong><span>${yc} ${t.p2} (+)</span></div>`:'');
+}
+
+async function enviar(){
+  const t=T[lang];
+  if(!document.getElementById('faccept').checked){alert(t.eaccept);return;}
+  const btn=document.getElementById('bsend');
+  btn.disabled=true;btn.textContent=t.sending;
+  const hn=dets.map((d,i)=>ans[i]===true&&d?`Q${i+1}: ${d}`:'').filter(Boolean).join(' | ');
+  const payload={
+    name:document.getElementById('fn').value.trim(),
+    apellidos:document.getElementById('fa').value.trim(),
+    email:document.getElementById('fe').value.trim(),
+    phone:document.getElementById('fp').value.trim(),
+    dni:document.getElementById('fd').value.trim(),
+    birthdate:document.getElementById('fb').value,
+    dive_level:document.getElementById('fl').value,
+    health_ok:!ans.some(a=>a===true),
+    health_notes:hn,
+    med_answers:ans.map((a,i)=>({q:i+1,answer:a?'yes':'no',detail:dets[i]||''})),
+    sig_services:document.getElementById('sig-srv').toDataURL('image/png'),
+    sig_data:document.getElementById('sig-rgpd').toDataURL('image/png'),
+    language:lang
+  };
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    document.getElementById('step4').classList.remove('active');
+    step=5;
+    document.getElementById('step5').classList.add('active');
+    for(let i=1;i<=4;i++){const p=document.getElementById('ps'+i);p.classList.remove('active');p.classList.add('done');}
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){
+    alert('Error al enviar. Por favor inténtalo de nuevo.');
+    btn.disabled=false;btn.textContent=t.send;
+  }
+}
+
+window.addEventListener('load',()=>{initSig('srv');initSig('rgpd');buildMed();apply();});
+</script>
+</body>
+</html>
