@@ -649,7 +649,7 @@ async function enviar(){
     language:lang
   };
   try{
-    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),redirect:'follow',mode:'no-cors'});
     document.getElementById('step4').classList.remove('active');
     step=5;
     document.getElementById('step5').classList.add('active');
@@ -665,3 +665,4 @@ window.addEventListener('load',()=>{initSig('srv');initSig('rgpd');buildMed();ap
 </script>
 </body>
 </html>
+
