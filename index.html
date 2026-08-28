@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Buceo Hispania — Registro de Cliente</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#0077b6;--navy:#023e8a;--bg:#f0f4f8;--card:#fff;--border:#ccd9e3;--text:#1a2b3c;--text2:#4a6580;--text3:#8fa8be;--green:#2d9b6f;--red:#c0392b;--yellow:#b8860b;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+.header{background:var(--navy);padding:20px;text-align:center}
+.header h1{color:#fff;font-size:19px;font-weight:700}
+.header p{color:rgba(255,255,255,.7);font-size:12px;margin-top:3px}
+.lang-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.lang-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.lang-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.progress-bar{background:#fff;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.progress-steps{display:flex;align-items:center;max-width:600px;margin:0 auto}
+.p-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.p-step:not(:last-child)::after{content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.p-step.done::after{background:var(--primary)}
+.p-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);position:relative;z-index:1;transition:all .2s}
+.p-step.done .p-dot{background:var(--primary);border-color:var(--primary);color:#fff}
+.p-step.active .p-dot{border-color:var(--primary);color:var(--primary)}
+.p-label{font-size:10px;color:var(--text3);text-align:center;font-weight:500}
+.p-step.done .p-label,.p-step.active .p-label{color:var(--primary)}
+.form-wrap{max-width:640px;margin:0 auto;padding:16px}
+.step-panel{display:none}
+.step-panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:8px;padding:10px 12px;font-size:15px;outline:none;transition:border .15s;font-family:inherit;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%234a6580' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.form-group textarea{resize:vertical;min-height:68px}
+.required{color:var(--red)}
+.field-error{font-size:11px;color:var(--red);margin-top:3px;display:none}
+.field-error.show{display:block}
+.input-error{border-color:var(--red)!important}
+.med-q{border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;transition:all .15s}
+.med-q.yes{border-color:#e6ac00;background:#fffbf0}
+.med-q.no{border-color:#a8d5b5;background:#f5fff9}
+.med-q-text{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:10px}
+.med-qn{font-weight:700;color:var(--primary);margin-right:4px}
+.med-btns{display:flex;gap:8px}
+.med-btn{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.med-btn-yes.sel{background:#fff3cd;border-color:#e6ac00;color:#7d5a00}
+.med-btn-no.sel{background:#d4edda;border-color:var(--green);color:#155724}
+.med-cond{margin-top:10px;display:none}
+.med-cond.show{display:block}
+.med-cond label{font-size:11px;font-weight:600;color:#7d5a00;display:block;margin-bottom:4px}
+.med-cond textarea{width:100%;border:1.5px solid #e6ac00;border-radius:6px;padding:8px;font-size:13px;font-family:inherit;outline:none;background:#fff;resize:vertical;min-height:54px}
+.med-warn{background:#fff3cd;border:1px solid #e6ac00;border-radius:8px;padding:12px;font-size:12px;color:#7d5a00;margin-top:12px;display:none;gap:8px;line-height:1.5;align-items:flex-start}
+.med-warn.show{display:flex}
+.consent-text{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6;max-height:110px;overflow-y:auto;margin-bottom:12px}
+.sig-wrap{border:2px dashed var(--border);border-radius:10px;background:#fafcff;position:relative;overflow:hidden;touch-action:none}
+.sig-canvas{display:block;width:100%;cursor:crosshair;touch-action:none;height:160px}
+@media(min-width:600px){.sig-canvas{height:200px}}
+.sig-ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text3);font-size:13px;pointer-events:none;text-align:center;line-height:1.6}
+.sig-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:#fff}
+.sig-clear{background:none;border:1.5px solid var(--border);color:var(--text2);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+.sig-ok{font-size:12px;color:var(--green);font-weight:700;display:none}
+.summary-row{font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.summary-row strong{color:var(--text);min-width:100px;flex-shrink:0}
+.accept-box{margin-top:14px;padding:14px;background:#f0f8ff;border-radius:8px;border:1px solid #b8d4e8}
+.accept-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--text2);line-height:1.5}
+.accept-label input{margin-top:2px;width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:var(--primary)}
+.form-footer{display:flex;gap:10px;margin-top:8px}
+.btn-back{flex:1;padding:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-next{flex:2;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-next:disabled{background:var(--border);cursor:not-allowed}
+.success-card{text-align:center;padding:40px 20px}
+.success-icon{font-size:56px;margin-bottom:16px}
+.success-card h2{font-size:22px;color:var(--green);margin-bottom:10px}
+.success-card p{font-size:14px;color:var(--text2);line-height:1.7;max-width:400px;margin:0 auto}
+@media(max-width:600px){.card{padding:14px}.header h1{font-size:16px}.p-label{display:none}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="data:image/jpeg;base64,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FFABg+pppBHC06jHGKAG+X70bRnG7606kAAGKAEHy87uKCu35gadQPpQA3Z/nNBUjladSLjHFACbRnHNGO2z8c04ADoKTaM5xQAn7uj734dKdgegooAbx2+9Sc7uP0p9AAHQUAMx68Uqr6rThg8igDAxQAYGc01k/u06igBADn2+tAHfp7UtAznnFABRgEciiigAooBB5pAAOgoAAcjNLnIyKMA9RRQA1gfugcUYPHNOwM5pAMf1oAYQQcGlVd3engAdBRQA0oexpSoPWlAA6CigBpT+6aNh9RSgjoDS0ANIJOB2pMHOBT6KAGbW9KNrHtTxjqO9IAAMUCuhhBBwaCMHFOwWbDU457UDGAE9BQylaXb83tRtz/Dj8aAG0AE9BTmBLcLRtBX5aAG9KKXGTgUbG9KAEopdjelIAT0FABRRjnAooAKKKXAxkmgAbGeKSiigAooooAKKKKACiigYzzQAuD6GlUADcaCqn7ppQoHQUAIASchqUjIwKVeg+lIBjvmgACgHIoAA6UDOOTS0AAGOBQPTFFFAB14IoAA6UUUAA44ooooAQDAxSgADFFFABgDoKKKKACiiigAooooAKPrRRQAAY4FFFFABRwooooAQHIzigKB0paKACiiigAooooAOc0HPY0UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFGB6CiigAoAwMCiigAooooEtgooooGFFFFAlsFFFFAwowM5oooAKKKKACiiigAooooAKKKKACiiigAooooFZBRRRQMKKKKACiiigAooooAKKKKACiiigAooooAKAAOBRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUAY4FABRRRQAUAY4FFFABRRRQAUUUUAFFFFABRRRQK6CiiigYAADAooooACQBk0AY4AoooAMDGMUm1fSlooAaOuD2pVxjilAAGBRgZzQAg/wB7NLjjAoooAMADGKayjHApcHdnNLgegoAjpyqCv1ok7Uvy/coAT/vmhlUD0ob5fu0df+A0ANopWUKOvNJQAUUuDjNJQAUq8HOcUgBPApyL/FmgAUMvalGe4pMNnIWnUAFFFFAlsFFFGB6CgYUUUDPegAoopCoJyaBXQtFFFAXQUUUUDCiiigAooooAKKKKACiiigV0FFFFAwooooAKKKKACiiigAooooEncKKKKBhRRRQAUUUUAAAAwKKKKACiiigAooooAKKKKACiiigAooooEtgooooGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUAADAoooFqFFFFAwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigSdwooooDRIKKKKBgBjgUUUUExCiiigoKKKKACiiigAooooAKKKMA9RQAUUUAY4FABRRRQAUUUUCsgooooGFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAABgYoPI4NFFADR8y7e9B47/AK0eZ7UmSRgc0AJRRRQAUoH/ANakpQSOlAC9OMf+PU7nNNT6fjTgQRkUAHSkAC85paKACiiigAooooAKKKKBWQUUUUBZBRRRQMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKBWQUUUUDCijpRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAJgHmloAwMUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAtEgooooGFFFFABRRRQKyCiiigYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAroKKKKBhTTkd/rTvpTen+1QA047Uo9Bn86CCWOKMZHB+tACc0gz3FLRQAUUUoBPQUAKAenalAPc0tIM5JxQAuQOpooooAKKKKACiiigV0FFFFAwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooFZBRRRQMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiijA9BQAUUUUAFFFFABRRRQAUUUUAFFFFABzmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKBXQUUUYB6igLoKKKKBhRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFArIKKKKBhRgZzRQcHg0ANXb+NG3P8OPxo/76ozzj/aoANv8AsfrTTjPBpwK/dZcU2gBR7+tCfeFIM54p0fegBwGBiikPAJAoBBOKBLYWiiigYUUUUAFFFFABRQBjgUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUA5oAKKKMDOaACiigdOmKACiiigmIUUUUFBRRRQAUUUUAFFFFABRRRQAUDPejA9BRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUmMDgUtFADSn900f7/4UNu/ClOB1HSgBCoI+WmnHanSdqbQAUo6jFJSgFjQArDoopV5GfWm5IPBpV9F/OgBf4fl/Clo6UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFBxjmiigBvUnafrQAv5U4gHqKau7tQASdqQ+rHtxStwcjrRjP/fNACfw9O9IM54p2OOB0NJgZxkfWgBKcOwBoVO5FC5XqtACgnoRQAAc0cE/SloAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooFqFFFFAwooooAKKKKACiiigAooooAKKMDOaKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigSdwooooGFFFFABRRRQAUUUUAFAAAwKKACiiigAoooBB5FABRRRQJbBRRRQMKKKKACiiigAooooAKKKKACiiigAooooAKAMDFFFABRRRQAUUUUAFFFFAlsFFFFAwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApMc5/KlOe1GTnpQA3/Z3/pQpyNpob/Z/Sjdjt+FAAflbd2o/5Z0MVI+9R1zxQAmTjFA9fSkooAUE5zSg4HT602lA4zmgBeuOadTVIPy7aUDAwaAFooooAKKKKACj60AY4FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUCugooooGFFFFABSEcYBxS0UAIoIGGOaWiigAooooAKKKKACiiigAooooAMDOaKKKACiiigAooooAD064pqqw53n8adRQAUUUUAFFFFABRRRQAUUUUAFFFFAuoUUUUDCiiigAooooAKKKKBWQUUUUDCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACmk7mwGpWPbB/CloEthuSzZWlXb2pOGH9aMYJ+lAxFbHBpTuZc4pNrDtRnjn8KAEooooAKVRlqSlBI6UAKu3bzTu3HpxTQWzx+VOGMcUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAIevT8aUZ70UUC1CiiigYUUAY4FFABRRRQAUUUUCWwUUUUDCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigVkFFFFAwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKADAzmiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKBLYKKKKBhRRRQAhGRjNJ/s7P1pcZPI6dKTHo3IoAOXX3oJ7r2oKlR8tG3Iz7UAITk5FBz09KSlI+UGgBKKKKACiiigBQSOBTxnHIqOnKfXtQA6gnAzSA5GTSkE9DigA69RRRRgDoKACiijpQAUUAg9KTOP60ALRRQM96ACikyd2MUAnOCK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" alt="Buceo Hispania" style="max-height:80px;max-width:220px;object-fit:contain;display:block;margin:0 auto 10px;border-radius:6px">
+  <h1>Buceo Hispania</h1>
+  <p id="h-sub">Formulario de registro</p>
+</div>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('es',this)">🇪🇸 Español</button>
+  <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 English</button>
+  <button class="lang-btn" onclick="setLang('fr',this)">🇫🇷 Français</button>
+  <button class="lang-btn" onclick="setLang('de',this)">🇩🇪 Deutsch</button>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="p-step active" id="ps1"><div class="p-dot">1</div><div class="p-label" id="pl1">Datos</div></div>
+    <div class="p-step" id="ps2"><div class="p-dot">2</div><div class="p-label" id="pl2">Médico</div></div>
+    <div class="p-step" id="ps3"><div class="p-dot">3</div><div class="p-label" id="pl3">Firmas</div></div>
+    <div class="p-step" id="ps4"><div class="p-dot">4</div><div class="p-label" id="pl4">Envío</div></div>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- PASO 1: DATOS -->
+  <div class="step-panel active" id="step1">
+    <div class="card">
+      <div class="card-title" id="s1t">📋 Datos personales</div>
+      <div class="form-row">
+        <div class="form-group"><label id="ln">Nombre <span class="required">*</span></label><input id="fn" type="text" autocomplete="given-name"><div class="field-error" id="en"></div></div>
+        <div class="form-group"><label id="la">Apellidos <span class="required">*</span></label><input id="fa" type="text" autocomplete="family-name"><div class="field-error" id="ea"></div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="lb">Fecha de nacimiento <span class="required">*</span></label><input id="fb" type="date"><div class="field-error" id="eb"></div></div>
+        <div class="form-group"><label id="ld">DNI / Pasaporte</label><input id="fd" type="text"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="le">Email <span class="required">*</span></label><input id="fe" type="email" autocomplete="email"><div class="field-error" id="ee"></div></div>
+        <div class="form-group"><label id="lp">Teléfono</label><input id="fp" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="form-group">
+        <label id="ll">Nivel de buceo</label>
+        <select id="fl">
+          <option value="">—</option>
+          <option value="Sin experiencia">Sin experiencia / No diver</option>
+          <option value="Bautismo">Bautismo / Discovery Dive</option>
+          <option value="Open Water (OW)">Open Water (OW)</option>
+          <option value="Advanced (AOW)">Advanced Open Water (AOW)</option>
+          <option value="Rescue Diver">Rescue Diver</option>
+          <option value="Divemaster">Divemaster</option>
+          <option value="Instructor">Instructor</option>
+          <option value="Snorkel">Snorkel</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer"><button class="btn-next" onclick="go(2)" id="bn1">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 2: MÉDICO -->
+  <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-title" id="s2t">🏥 Cuestionario médico</div>
+      <p id="s2i" style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px;padding:10px;background:#f8fafc;border-radius:8px;border-left:3px solid var(--primary)"></p>
+      <div id="medqs"></div>
+      <div class="med-warn" id="mwarn"><span style="font-size:20px;flex-shrink:0">⚠️</span><span id="mwt"></span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(1)" id="bb2">← Atrás</button><button class="btn-next" onclick="go(3)" id="bn2">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 3: FIRMAS -->
+  <div class="step-panel" id="step3">
+    <div class="card">
+      <div class="card-title" id="s3ts">✍️ Consentimiento de servicios</div>
+      <div class="consent-text">Declaro haber sido informado/a de las condiciones del servicio y acepto los términos y condiciones establecidos por el centro de buceo, incluyendo los riesgos inherentes a la práctica del buceo recreativo. / I declare that I have been informed of the service conditions and accept the terms and conditions established by the dive centre, including the inherent risks of recreational diving.</div>
+      <label style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px;display:block" id="lss">Firma aquí / Sign here</label>
+      <div class="sig-wrap"><canvas class="sig-canvas" id="sig-srv"></canvas><div class="sig-ph" id="sig-srv-ph">✍️<br>Firma con el dedo o el ratón<br>Sign with finger or mouse</div></div>
+      <div class="sig-bar"><button class="sig-clear" onclick="clearSig('srv')" id="bcs">Borrar / Clear</button><span class="sig-ok" id="sig-srv-ok">✓ Firmado / Signed</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="s3tr">🔒 Consentimiento RGPD / GDPR</div>
+      <div class="consent-text">Consiento el tratamiento de mis datos personales conforme al RGPD (UE) 2016/679. Los datos serán utilizados exclusivamente para la gestión de actividades del centro de buceo. / I consent to the processing of my personal data in accordance with GDPR (EU) 2016/679. Data will be used exclusively for managing dive centre activities.</div>
+      <label style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px;display:block" id="lsr">Firma aquí / Sign here</label>
+      <div class="sig-wrap"><canvas class="sig-canvas" id="sig-rgpd"></canvas><div class="sig-ph" id="sig-rgpd-ph">✍️<br>Firma con el dedo o el ratón<br>Sign with finger or mouse</div></div>
+      <div class="sig-bar"><button class="sig-clear" onclick="clearSig('rgpd')" id="bcr">Borrar / Clear</button><span class="sig-ok" id="sig-rgpd-ok">✓ Firmado / Signed</span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(2)" id="bb3">← Atrás</button><button class="btn-next" onclick="go(4)" id="bn3">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 4: ENVÍO -->
+  <div class="step-panel" id="step4">
+    <div class="card">
+      <div class="card-title" id="s4t">✅ Resumen y envío</div>
+      <div id="sumbox"></div>
+      <div class="accept-box">
+        <label class="accept-label"><input type="checkbox" id="faccept"><span id="lacct"></span></label>
+      </div>
+      <div class="med-warn" id="sendBlockWarn" style="border-color:var(--red);background:#ffe4e4;color:#7d0000"><span style="font-size:20px;flex-shrink:0">🚫</span><span id="sendBlockText"></span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(3)" id="bb4">← Atrás</button><button class="btn-next" onclick="enviar()" id="bsend">Enviar registro</button></div>
+  </div>
+
+  <!-- ÉXITO -->
+  <div class="step-panel" id="step5">
+    <div class="card success-card">
+      <div class="success-icon">🤿</div>
+      <h2 id="s5t">¡Registro completado!</h2>
+      <p id="s5p">Tus datos han sido registrados correctamente. ¡Te esperamos!</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaPveeAoVM7ZaNQdoc7zKMKQpFB_ltAXlvCgiglTbard7Mcqe4vLByHQu9nN2vs6U/exec';
+
+const TRANSLATIONS = {
+  es:{sub:'Formulario de registro',p1:'Datos',p2:'Médico',p3:'Firmas',p4:'Envío',
+    s1:'📋 Datos personales',s2:'🏥 Cuestionario médico',s3s:'✍️ Consentimiento de servicios',s3r:'🔒 Consentimiento RGPD',s4:'✅ Resumen y envío',
+    s2i:'Por favor responde con sinceridad. Una respuesta SÍ no impide necesariamente la práctica del buceo, pero puede requerir la aprobación de un médico.',
+    ln:'Nombre',la:'Apellidos',lb:'Fecha de nacimiento',ld:'DNI / Pasaporte',le:'Email',lp:'Teléfono',ll:'Nivel de buceo',
+    yes:'Sí',no:'No',det:'Por favor da más detalles:',
+    warn:'Algunas de tus respuestas requieren evaluación médica previa. El centro se pondrá en contacto contigo.',
+    blockedmsg:'No puedes enviar el formulario mientras alguna pregunta médica esté respondida con "Sí". Todas las preguntas marcadas deben ser "No" para poder continuar.',
+    next:'Siguiente →',back:'← Atrás',send:'Enviar registro',clear:'Borrar',signed:'✓ Firmado',
+    acct:'He leído y acepto todos los consentimientos. Declaro que los datos proporcionados son verídicos.',
+    s5t:'¡Registro completado!',s5p:'Tus datos han sido registrados correctamente. ¡Te esperamos en el agua!',
+    ename:'El nombre es obligatorio',eapell:'Los apellidos son obligatorios',ebirth:'La fecha de nacimiento es obligatoria',eemail:'Email no válido',
+    eaccept:'Debes aceptar los consentimientos',esig:'Ambas firmas son obligatorias',emed:'Por favor responde todas las preguntas médicas',sending:'Enviando...',
+    sname:'Nombre',sbirth:'Nacimiento',slevel:'Nivel',semail:'Email',sphone:'Teléfono',
+    reqmed_title:'⚠️ CERTIFICADO MÉDICO OBLIGATORIO',
+    reqmed:'Debes obtener la aprobación de tu médico antes de participar en actividades de buceo. Entrega las 3 páginas del formulario RSTC a tu médico para que complete el examen médico.',
+    det2:'Por favor responde las siguientes preguntas con SÍ o NO:',
+    qs:[
+      'He tenido algún problema respiratorio o de salud relacionado con los pulmones, el corazón o la sangre, o me han diagnosticado de COVID-19.',
+      'Tengo más de 45 años.',
+      'Me cuesta realizar ejercicio moderado (p.ej. caminar 1,6 km en 12 min o nadar 200 m sin descansar) o no he podido realizar actividad física normal por motivos de salud en los últimos 12 meses.',
+      'He tenido algún problema ocular, auditivo o relacionado con las fosas nasales o los senos paranasales.',
+      'Me he operado en los últimos 12 meses o actualmente padezco algún tipo de afectación derivada de una operación quirúrgica anterior.',
+      'He perdido el conocimiento, he tenido dolores de cabeza por migraña, convulsiones, un ACV o una lesión grave en la cabeza, o padezco una enfermedad o lesión neurológica permanente.',
+      'Estoy realizando un tratamiento (o lo he completado en los últimos 5 años) para problemas psicológicos, trastornos de la personalidad, ataques de pánico, adicción a drogas o alcohol, o me han diagnosticado una dificultad de aprendizaje.',
+      'He tenido problemas de espalda, hernia, úlceras o diabetes.',
+      'He tenido problemas estomacales o intestinales, incluyendo diarrea recientemente.',
+      'Estoy tomando medicamentos bajo prescripción médica (excepto anticonceptivos o antipalúdicos que no sean mefloquina/Lariam).'
+    ],
+    boxes:{
+      0:['Una cirugía torácica, cardíaca o de válvula cardíaca, un neumotórax (colapso pulmonar) o tengo un stent implantado.',
+         'Actualmente fumo o inhalo nicotina por otros medios.',
+         'Un problema o enfermedad del corazón (angina, dolor en el pecho, insuficiencia cardíaca, infarto, ACV, o estoy en tratamiento cardíaco).',
+         'Bronquitis crónica y tos persistente en los últimos 12 meses, o me han diagnosticado enfisema pulmonar.',
+         'Asma, sibilancias, alergias graves, fiebre del heno u obstrucción de vías respiratorias en los últimos 12 meses que limita mi capacidad física.',
+         'Me han diagnosticado de COVID-19.'],
+      1:['Tengo el colesterol alto.','Tengo hipertensión arterial.',
+         'Un familiar de 1º o 2º grado murió de muerte súbita, enfermedad cardíaca o ACV antes de los 50 años.'],
+      3:['Una cirugía sinusal en los últimos 6 meses.',
+         'Alguna enfermedad auditiva o cirugía del oído, pérdida de audición o alteraciones del equilibrio.',
+         'Sinusitis crónica en los últimos 12 meses.','Una cirugía ocular en los últimos 3 meses.'],
+      5:['Una lesión en la cabeza con pérdida del conocimiento en los últimos 5 años.',
+         'Lesiones o enfermedades neurológicas persistentes.',
+         'Dolores de cabeza crónicos por migraña en los últimos 12 meses, o tomo medicación para prevenirlos.',
+         'Desvanecimientos o desmayos en los últimos 5 años.',
+         'Epilepsia, ataques o convulsiones, o tomo medicación para prevenirlos.'],
+      6:['Problemas de salud mental o psicológicos que requieren tratamiento médico o psiquiátrico.',
+         'Trastorno depresivo mayor, tendencias suicidas, ataques de pánico o trastorno bipolar descontrolado que requiere medicación psiquiátrica.',
+         'Enfermedad de salud mental o trastorno de aprendizaje diagnosticado que requiere atención continua.',
+         'Adicción a drogas o alcohol que ha requerido tratamiento en los últimos 5 años.'],
+      7:['Problemas crónicos de espalda que limitan mi actividad diaria en los últimos 6 meses.',
+         'Cirugía de espalda o columna vertebral en los últimos 12 meses.',
+         'Diabetes tratada con insulina o dieta, o diabetes gestacional, en los últimos 12 meses.',
+         'Una hernia sin corregir que limita mis habilidades físicas.',
+         'Úlceras activas o no tratadas, o tratamiento quirúrgico de una úlcera en los últimos 6 meses.',
+         'Cirugía de ostomía sin autorización médica para nadar o realizar actividad física.'],
+      8:['Deshidratación que ha requerido intervención médica en los últimos 7 días.',
+         'Úlceras estomacales o intestinales activas o tratamiento quirúrgico en los últimos 6 meses.',
+         'Ardor de estómago frecuente, regurgitación o enfermedad por reflujo gastroesofágico (ERGE).',
+         'Colitis ulcerosa activa o no controlada, o enfermedad de Crohn.',
+         'Una cirugía bariátrica en los últimos 12 meses.']}},
+  en:{sub:'Registration form',p1:'Details',p2:'Medical',p3:'Signatures',p4:'Submit',
+    s1:'📋 Personal details',s2:'🏥 Medical questionnaire',s3s:'✍️ Service consent',s3r:'🔒 GDPR consent',s4:'✅ Summary & submission',
+    s2i:'Please answer honestly. A YES answer does not necessarily prevent you from diving, but may require medical clearance.',
+    ln:'First name',la:'Last name',lb:'Date of birth',ld:'ID / Passport',le:'Email',lp:'Phone',ll:'Diving level',
+    yes:'Yes',no:'No',det:'Please provide more details:',
+    warn:'Some of your answers require prior medical evaluation. The centre will contact you before the activity.',
+    blockedmsg:'You cannot submit the form while any medical question is answered "Yes". All flagged questions must be "No" to continue.',
+    next:'Next →',back:'← Back',send:'Submit registration',clear:'Clear',signed:'✓ Signed',
+    acct:'I have read and accept all consents. I declare that the information provided is true and accurate.',
+    s5t:'Registration complete!',s5p:'Your details have been registered. See you in the water!',
+    ename:'First name is required',eapell:'Last name is required',ebirth:'Date of birth is required',eemail:'Invalid email',
+    eaccept:'You must accept the consents',esig:'Both signatures are required',emed:'Please answer all medical questions',sending:'Sending...',
+    sname:'Name',sbirth:'Born',slevel:'Level',semail:'Email',sphone:'Phone',
+    reqmed_title:'⚠️ MEDICAL CERTIFICATE REQUIRED',
+    reqmed:'You must obtain your doctor\'s approval before taking part in diving activities. Give your doctor all 3 pages of the RSTC form to complete the medical examination.',
+    det2:'Please answer the following questions with YES or NO:',
+    qs:[
+      'I have had or been diagnosed with a respiratory or health problem related to lungs, heart or blood, or I have been diagnosed with COVID-19.',
+      'I am over 45 years of age.',
+      'I have difficulty performing moderate exercise (e.g. walking 1.6 km in 12 min or swimming 200 m without resting), or I have been unable to perform normal physical activity for health reasons in the last 12 months.',
+      'I have had a problem with my eyes, ears, nasal passages or sinuses.',
+      'I have had surgery in the last 12 months or I am currently experiencing after-effects of a previous operation.',
+      'I have had loss of consciousness, migraine headaches, seizures, a stroke or serious head injury, or I have a persistent neurological injury or disease.',
+      'I am receiving (or completed in the last 5 years) treatment for psychological problems, personality disorders, panic attacks, drug or alcohol addiction, or I have been diagnosed with a learning difficulty.',
+      'I have had back problems, a hernia, ulcers or diabetes.',
+      'I have had stomach or intestinal problems, including recent diarrhoea.',
+      'I am taking prescription medications (except contraceptives or anti-malarials that are not mefloquine/Lariam).'
+    ],
+    boxes:{
+      0:['Chest, cardiac or heart valve surgery, a pneumothorax (collapsed lung), or I have a stent implanted.',
+         'I currently smoke or inhale nicotine by other means.',
+         'A heart problem or disease (angina, chest pain, heart failure, pulmonary oedema, heart attack, stroke, or I am in cardiac treatment).',
+         'Chronic bronchitis and persistent cough in the last 12 months, or diagnosed pulmonary emphysema.',
+         'Asthma, wheezing, severe allergies, hay fever or airway obstruction in the last 12 months limiting my physical capacity.',
+         'I have been diagnosed with COVID-19.'],
+      1:['I have high cholesterol.','I have high blood pressure.',
+         'A first or second-degree relative died of sudden death, heart disease or stroke before age 50.'],
+      3:['Sinus surgery in the last 6 months.',
+         'An ear disease or ear surgery, hearing loss or balance problems.',
+         'Chronic sinusitis in the last 12 months.','Eye surgery in the last 3 months.'],
+      5:['A head injury with loss of consciousness in the last 5 years.',
+         'Persistent neurological injuries or diseases.',
+         'Chronic migraine headaches in the last 12 months, or I take medication to prevent them.',
+         'Fainting or blackouts in the last 5 years.',
+         'Epilepsy, seizures or convulsions, or I take medication to prevent them.'],
+      6:['Behavioural, mental or psychological health problems requiring medical or psychiatric treatment.',
+         'Major depressive disorder, suicidal tendencies, panic attacks or uncontrolled bipolar disorder requiring psychiatric medication.',
+         'Diagnosed mental health condition or learning disorder requiring ongoing care.',
+         'Drug or alcohol addiction requiring treatment in the last 5 years.'],
+      7:['Chronic back problems limiting my daily activity in the last 6 months.',
+         'Back or spinal surgery in the last 12 months.',
+         'Diabetes treated by insulin or diet, or gestational diabetes, in the last 12 months.',
+         'An uncorrected hernia limiting my physical abilities.',
+         'Active or untreated ulcers, or surgical treatment of an ulcer in the last 6 months.',
+         'Ostomy surgery without medical authorisation to swim or perform physical activity.'],
+      8:['Dehydration requiring medical intervention in the last 7 days.',
+         'Active or untreated gastric or intestinal ulcers, or surgical treatment in the last 6 months.',
+         'Frequent heartburn, regurgitation or gastroesophageal reflux disease (GERD).',
+         'Active or uncontrolled ulcerative colitis or Crohn\'s disease.',
+         'Bariatric surgery in the last 12 months.']}},
+  fr:{sub:'Formulaire d\'inscription',p1:'Données',p2:'Médical',p3:'Signatures',p4:'Envoi',
+    s1:'📋 Données personnelles',s2:'🏥 Questionnaire médical',s3s:'✍️ Consentement services',s3r:'🔒 Consentement RGPD',s4:'✅ Résumé & envoi',
+    s2i:'Veuillez répondre honnêtement. Une réponse OUI n\'empêche pas necessairement la plongee, mais peut necessiter un avis medical.',
+    ln:'Prénom',la:'Nom',lb:'Date de naissance',ld:'CNI / Passeport',le:'Email',lp:'Téléphone',ll:'Niveau de plongée',
+    yes:'Oui',no:'Non',det:'Veuillez donner plus de détails :',
+    warn:'Certaines réponses nécessitent une évaluation médicale préalable. Le centre vous contactera avant l\'activité.',
+    blockedmsg:'Vous ne pouvez pas envoyer le formulaire tant qu\'une question médicale est répondue par "Oui". Toutes les questions signalées doivent être "Non" pour continuer.',
+    next:'Suivant →',back:'← Retour',send:'Envoyer l\'inscription',clear:'Effacer',signed:'✓ Signé',
+    acct:'J\'ai lu et j\'accepte tous les consentements. Je déclare que les informations fournies sont véridiques.',
+    s5t:'Inscription complète !',s5p:'Vos données ont été enregistrées. A bientot.',
+    ename:'Le prénom est obligatoire',eapell:'Le nom est obligatoire',ebirth:'La date de naissance est obligatoire',eemail:'Email invalide',
+    eaccept:'Vous devez accepter les consentements',esig:'Les deux signatures sont obligatoires',emed:'Veuillez répondre à toutes les questions médicales',sending:'Envoi...',
+    sname:'Nom',sbirth:'Né(e)',slevel:'Niveau',semail:'Email',sphone:'Téléphone',
+    reqmed_title:'⚠️ CERTIFICAT MÉDICAL OBLIGATOIRE',
+    reqmed:'Vous devez obtenir l\'approbation de votre médecin avant de participer à des activités de plongée. Remettez les 3 pages du formulaire RSTC à votre médecin pour qu\'il complète l\'examen médical.',
+    det2:'Veuillez répondre aux questions suivantes par OUI ou NON :',
+    qs:[
+      'J\'ai eu ou on m\'a diagnostiqué un problème respiratoire ou de santé lié aux poumons, au cœur ou au sang, ou j\'ai été diagnostiqué(e) avec la COVID-19.',
+      'J\'ai plus de 45 ans.',
+      'J\'ai du mal à faire de l\'exercice modéré (p.ex. marcher 1,6 km en 12 min ou nager 200 m sans s\'arrêter), ou je n\'ai pas pu faire d\'activité physique normale pour des raisons de santé au cours des 12 derniers mois.',
+      'J\'ai eu un problème oculaire, auditif ou lié aux fosses nasales ou aux sinus.',
+      'J\'ai été opéré(e) au cours des 12 derniers mois ou je souffre actuellement de séquelles d\'une opération chirurgicale antérieure.',
+      'J\'ai perdu connaissance, eu des migraines, des convulsions, un AVC ou une blessure grave à la tête, ou je souffre d\'une blessure ou maladie neurologique persistante.',
+      'Je suis en traitement (ou l\'ai terminé dans les 5 dernières années) pour des problèmes psychologiques, troubles de la personnalité, crises de panique, dépendance aux drogues ou à l\'alcool, ou on m\'a diagnostiqué une difficulté d\'apprentissage.',
+      'J\'ai eu des problèmes de dos, une hernie, des ulcères ou du diabète.',
+      'J\'ai eu des problèmes gastriques ou intestinaux, y compris une diarrhée récente.',
+      'Je prends des médicaments sur ordonnance (sauf contraceptifs ou antipaludéens autres que méfloquine/Lariam).'
+    ],
+    boxes:{
+      0:['Une chirurgie thoracique, cardiaque ou valvulaire, un pneumothorax ou j\'ai un stent implanté.',
+         'Je fume actuellement ou inhale de la nicotine par d\'autres moyens.',
+         'Un problème cardiaque (angine, douleur thoracique, insuffisance cardiaque, infarctus, AVC, ou je suis en traitement cardiaque).',
+         'Bronchite chronique et toux persistante depuis 12 mois, ou emphysème pulmonar diagnostiqué.',
+         'Asthme, allergies graves, rhume des foins ou obstruction des voies respiratoires depuis 12 mois limitant mes capacités physiques.',
+         'J\'ai été diagnostiqué(e) avec la COVID-19.'],
+      1:['J\'ai un taux de cholestérol élevé.','J\'ai une hypertension artérielle.',
+         'Un membre de ma famille (1er ou 2e degré) est décédé subitement ou d\'une maladie cardiaque avant 50 ans.'],
+      3:['Une chirurgie des sinus dans les 6 derniers mois.',
+         'Une maladie de l\'oreille ou chirurgie auriculaire, perte auditive ou troubles de l\'équilibre.',
+         'Sinusite chronique dans les 12 derniers mois.','Une chirurgie oculaire dans les 3 derniers mois.'],
+      5:['Un traumatisme crânien avec perte de connaissance dans les 5 dernières années.',
+         'Blessures ou maladies neurologiques persistantes.',
+         'Migraines chroniques dans les 12 derniers mois ou je prends des médicaments préventifs.',
+         'Évanouissements dans les 5 dernières années.',
+         'Épilepsie, crises ou convulsions, ou je prends des médicaments préventifs.'],
+      6:['Problèmes de santé mentale nécessitant un traitement médical ou psychiatrique.',
+         'Dépression majeure, tendances suicidaires, crises de panique ou trouble bipolaire non contrôlé nécessitant un traitement psychiatrique.',
+         'Maladie de santé mentale ou trouble d\'apprentissage diagnostiqué nécessitant des soins continus.',
+         'Dépendance aux drogues ou à l\'alcool ayant nécessité un traitement dans les 5 dernières années.'],
+      7:['Problèmes chroniques de dos limitant l\'activité quotidienne dans les 6 derniers mois.',
+         'Chirurgie du dos ou de la colonne vertébrale dans les 12 derniers mois.',
+         'Diabète traité par insuline ou régime, ou diabète gestationnel, dans les 12 derniers mois.',
+         'Hernie non corrigée limitant mes capacités physiques.',
+         'Ulcères actifs ou traitement chirurgical dans les 6 derniers mois.',
+         'Chirurgie de stomie sans autorisation médicale pour nager ou faire de l\'activité physique.'],
+      8:['Déshydratation ayant nécessité une intervention médicale dans les 7 derniers jours.',
+         'Ulcères gastriques ou intestinaux actifs ou traitement chirurgical dans les 6 derniers mois.',
+         'Brûlures d\'estomac fréquentes, régurgitations ou reflux gastro-œsophagien (RGO).',
+         'Colite ulcéreuse active ou non contrôlée, ou maladie de Crohn.',
+         'Chirurgie bariatrique dans les 12 derniers mois.']}},
+  de:{sub:'Anmeldeformular',p1:'Daten',p2:'Medizin',p3:'Unterschriften',p4:'Senden',
+    s1:'📋 Persönliche Daten',s2:'🏥 Medizinischer Fragebogen',s3s:'✍️ Einwilligung Leistungen',s3r:'🔒 Einwilligung DSGVO',s4:'✅ Zusammenfassung',
+    s2i:'Bitte antworten Sie ehrlich. Ein JA schließt das Tauchen nicht unbedingt aus, kann aber eine ärztliche Freigabe erfordern.',
+    ln:'Vorname',la:'Nachname',lb:'Geburtsdatum',ld:'Ausweis / Reisepass',le:'E-Mail',lp:'Telefon',ll:'Tauchniveau',
+    yes:'Ja',no:'Nein',det:'Bitte geben Sie weitere Details an:',
+    warn:'Einige Antworten erfordern eine ärztliche Voruntersuchung. Das Zentrum wird Sie vor der Aktivität kontaktieren.',
+    blockedmsg:'Sie können das Formular nicht senden, solange eine medizinische Frage mit "Ja" beantwortet ist. Alle markierten Fragen müssen "Nein" sein, um fortzufahren.',
+    next:'Weiter →',back:'← Zurück',send:'Registrierung senden',clear:'Löschen',signed:'✓ Unterschrieben',
+    acct:'Ich habe alle Einwilligungen gelesen und akzeptiere sie. Ich erkläre, dass die Angaben der Wahrheit entsprechen.',
+    s5t:'Registrierung abgeschlossen!',s5p:'Ihre Daten wurden erfolgreich registriert. Wir freuen uns auf Sie!',
+    ename:'Vorname ist erforderlich',eapell:'Nachname ist erforderlich',ebirth:'Geburtsdatum ist erforderlich',eemail:'Ungültige E-Mail',
+    eaccept:'Sie müssen den Einwilligungen zustimmen',esig:'Beide Unterschriften sind erforderlich',emed:'Bitte beantworten Sie alle medizinischen Fragen',sending:'Wird gesendet...',
+    sname:'Name',sbirth:'Geb.',slevel:'Niveau',semail:'E-Mail',sphone:'Telefon',
+    reqmed_title:'⚠️ ÄRZTLICHES ATTEST ERFORDERLICH',
+    reqmed:'Sie müssen die Genehmigung Ihres Arztes einholen, bevor Sie an Tauchaktivitäten teilnehmen. Geben Sie Ihrem Arzt alle 3 Seiten des RSTC-Formulars, damit er die ärztliche Untersuchung abschließen kann.',
+    det2:'Bitte beantworten Sie die folgenden Fragen mit JA oder NEIN:',
+    qs:[
+      'Ich hatte oder wurde diagnostiziert mit einem Atemwegs- oder Gesundheitsproblem bezüglich Lungen, Herz oder Blut, oder ich wurde mit COVID-19 diagnostiziert.',
+      'Ich bin über 45 Jahre alt.',
+      'Ich habe Schwierigkeiten, moderate Aktivität auszuführen (z.B. 1,6 km in 12 Min. gehen oder 200 m ohne Pause schwimmen), oder konnte in den letzten 12 Monaten aus gesundheitlichen Gründen keine normale körperliche Aktivität ausüben.',
+      'Ich hatte ein Problem mit meinen Augen, Ohren, Nasengängen oder Nebenhöhlen.',
+      'Ich wurde in den letzten 12 Monaten operiert oder leide derzeit unter Nachwirkungen einer früheren Operation.',
+      'Ich hatte einen Bewusstseinsverlust, Migräne, Krampfanfälle, einen Schlaganfall oder eine schwere Kopfverletzung, oder habe eine anhaltende neurologische Erkrankung.',
+      'Ich erhalte (oder habe in den letzten 5 Jahren erhalten) eine Behandlung für psychologische Probleme, Persönlichkeitsstörungen, Panikattacken, Drogen- oder Alkoholabhängigkeit, oder mir wurde eine Lernschwäche diagnostiziert.',
+      'Ich hatte Rückenprobleme, einen Bruch, Magengeschwüre oder Diabetes.',
+      'Ich hatte Magen- oder Darmprobleme, einschließlich kürzlichem Durchfall.',
+      'Ich nehme verschreibungspflichtige Medikamente (außer Verhütungsmittel oder Malariamittel, die nicht Mefloquin/Lariam sind).'
+    ],
+    boxes:{
+      0:['Eine Brust-, Herz- oder Herzklappenoperation, ein Pneumothorax oder ich habe einen Stent implantiert.',
+         'Ich rauche derzeit oder nehme Nikotin auf andere Weise auf.',
+         'Eine Herzerkrankung (Angina, Brustschmerzen, Herzinsuffizienz, Herzinfarkt, Schlaganfall, oder ich bin in kardiologischer Behandlung).',
+         'Chronische Bronchitis und anhaltender Husten in den letzten 12 Monaten, oder diagnostiziertes Lungenemphysem.',
+         'Asthma, Keuchen, schwere Allergien, Heuschnupfen oder Atemwegsobstruktion in den letzten 12 Monaten, die meine Leistungsfähigkeit einschränkt.',
+         'Ich wurde mit COVID-19 diagnostiziert.'],
+      1:['Ich habe hohen Cholesterinspiegel.','Ich habe Bluthochdruck.',
+         'Ein Verwandter ersten oder zweiten Grades starb vor dem 50. Lebensjahr an plötzlichem Tod, Herzerkrankung oder Schlaganfall.'],
+      3:['Eine Nasennebenhoehlen-OP in den letzten 6 Monaten.',
+         'Eine Ohrerkrankung oder Ohroperation, Hörverlust oder Gleichgewichtsstörungen.',
+         'Chronische Sinusitis in den letzten 12 Monaten.','Eine Augenoperation in den letzten 3 Monaten.'],
+      5:['Eine Kopfverletzung mit Bewusstseinsverlust in den letzten 5 Jahren.',
+         'Anhaltende neurologische Verletzungen oder Erkrankungen.',
+         'Chronische Migräne in den letzten 12 Monaten, oder ich nehme Medikamente zur Vorbeugung.',
+         'Ohnmacht oder Bewusstlosigkeit in den letzten 5 Jahren.',
+         'Epilepsie, Anfälle oder Krämpfe, oder ich nehme Medikamente zur Vorbeugung.'],
+      6:['Geistige oder psychische Gesundheitsprobleme, die medizinische oder psychiatrische Behandlung erfordern.',
+         'Schwere Depression, Suizidgedanken, Panikattacken oder unkontrollierte bipolare Störung, die psychiatrische Medikation erfordert.',
+         'Diagnostizierte psychische Erkrankung oder Lernschwäche, die fortlaufende Betreuung erfordert.',
+         'Drogen- oder Alkoholabhängigkeit mit Behandlung in den letzten 5 Jahren.'],
+      7:['Chronische Rückenprobleme in den letzten 6 Monaten, die meine täglichen Aktivitäten einschränken.',
+         'Rücken- oder Wirbelsäulenoperation in den letzten 12 Monaten.',
+         'Diabetes (insulinpflichtig oder diätetisch) oder Schwangerschaftsdiabetes in den letzten 12 Monaten.',
+         'Unkorrigierter Bruch, der meine körperlichen Fähigkeiten einschränkt.',
+         'Aktive oder unbehandelte Magengeschwüre oder chirurgische Behandlung in den letzten 6 Monaten.',
+         'Stoma-OP ohne ärztliche Genehmigung zum Schwimmen oder körperlicher Aktivität.'],
+      8:['Dehydration mit medizinischem Eingriff in den letzten 7 Tagen.',
+         'Aktive oder unbehandelte Magen- oder Darmgeschwüre oder chirurgische Behandlung in den letzten 6 Monaten.',
+         'Häufiges Sodbrennen, Aufstoßen oder gastroösophageale Refluxkrankheit (GERD).',
+         'Aktive oder unkontrollierte Colitis ulcerosa oder Morbus Crohn.',
+         'Magenverkleinerungsoperation in den letzten 12 Monaten.']}}
+};
+let lang='es', step=1;
+const ans=new Array(10).fill(null), dets=new Array(10).fill('');
+
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  apply();
+}
+
+function apply(){
+  const t=TRANSLATIONS[lang];
+  const ids={'h-sub':t.sub,'pl1':t.p1,'pl2':t.p2,'pl3':t.p3,'pl4':t.p4,
+    's1t':t.s1,'s2t':t.s2,'s3ts':t.s3s,'s3tr':t.s3r,'s4t':t.s4,'s2i':t.s2i,'mwt':t.warn,
+    'bn1':t.next,'bb2':t.back,'bn2':t.next,'bb3':t.back,'bn3':t.next,'bb4':t.back,'bsend':t.send,
+    'bcs':t.clear,'bcr':t.clear,'sig-srv-ok':t.signed,'sig-rgpd-ok':t.signed,'lacct':t.acct,
+    's5t':t.s5t,'s5p':t.s5p};
+  Object.entries(ids).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  document.getElementById('ln').innerHTML=t.ln+' <span class="required">*</span>';
+  document.getElementById('la').innerHTML=t.la+' <span class="required">*</span>';
+  document.getElementById('lb').innerHTML=t.lb+' <span class="required">*</span>';
+  document.getElementById('ld').textContent=t.ld;
+  document.getElementById('le').innerHTML=t.le+' <span class="required">*</span>';
+  document.getElementById('lp').textContent=t.lp;
+  document.getElementById('ll').textContent=t.ll;
+  buildMed();
+  updateSum();
+  updateSendGate();
+}
+
+function buildMed(){
+  const t=TRANSLATIONS[lang],c=document.getElementById('medqs');
+  c.innerHTML='';
+  t.qs.forEach((q,i)=>{
+    const a=ans[i],isY=a===true,isN=a===false;
+    const boxes=t.boxes&&t.boxes[i]?t.boxes[i]:null;
+    const d=document.createElement('div');
+    d.className='med-q'+(isY?' yes':isN?' no':'');
+    let condHtml='';
+    if(isY){
+      if(boxes){
+        const subqs = boxes.map((sb,j)=>{
+          const sba = boxAns[i]&&boxAns[i][j]!==undefined?boxAns[i][j]:null;
+          const sbY = sba===true, sbN = sba===false;
+          return `<div class="med-q ${sbY?'yes':sbN?'no':''}" style="margin:6px 0;padding:10px;border-radius:8px;border:1.5px solid ${sbY?'#e6ac00':sbN?'#a8d5b5':'var(--border)'}">
+            <div class="med-q-text" style="margin-bottom:8px;font-size:12px">${sb}</div>
+            <div class="med-btns">
+              <button class="med-btn med-btn-yes${sbY?' sel':''}" onclick="setBoxAns(${i},${j},true)">${t.yes}</button>
+              <button class="med-btn med-btn-no${sbN?' sel':''}" onclick="setBoxAns(${i},${j},false)">${t.no}</button>
+            </div>
+            ${sbY?`<div style="font-size:11px;color:#c0392b;padding:6px 8px;background:#fee;border-radius:6px;margin-top:6px">⚠️ ${t.reqmed_title||'CERTIFICADO MÉDICO OBLIGATORIO'}</div>`:''}
+          </div>`;
+        }).join('');
+        condHtml=`<div class="med-cond show" id="mc${i}" style="margin-top:10px;padding:10px;background:rgba(230,172,0,.07);border-radius:8px;border:1px solid rgba(230,172,0,.3)">
+          <div style="font-size:11px;font-weight:700;color:#7d5a00;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">${t.det2||'Responde las siguientes preguntas:'}</div>
+          ${subqs}
+        </div>`;
+      } else {
+        condHtml=`<div class="med-cond show" id="mc${i}">
+          <div style="font-size:13px;color:#7d0000;padding:12px 14px;background:#ffe4e4;border-radius:8px;border:2px solid #c0392b;line-height:1.6;margin-top:8px">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px">${t.reqmed_title||'⚠️ CERTIFICADO MÉDICO OBLIGATORIO'}</div>
+            ${t.reqmed||'Debes obtener la aprobación de tu médico antes de bucear.'}
+          </div>
+        </div>`;
+      }
+    }
+    d.innerHTML=`<div class="med-q-text"><span class="med-qn">${i+1}.</span>${q}</div>
+      <div class="med-btns">
+        <button class="med-btn med-btn-yes${isY?' sel':''}" onclick="setAns(${i},true)">${t.yes}</button>
+        <button class="med-btn med-btn-no${isN?' sel':''}" onclick="setAns(${i},false)">${t.no}</button>
+      </div>
+      ${condHtml}`;
+    c.appendChild(d);
+  });
+}
+
+const boxAns={};
+function setBoxAns(qi,bi,val){
+  if(!boxAns[qi])boxAns[qi]={};
+  boxAns[qi][bi]=val;
+  document.getElementById('mwarn').classList.toggle('show', hasBlockingYes());
+  buildMed();
+  updateSendGate();
+}
+function toggleBox(qi,bi,checked){
+  if(!boxAns[qi])boxAns[qi]={};
+  boxAns[qi][bi]=checked;
+}
+
+function setAns(i,v){
+  const md=document.getElementById('md'+i);if(md)dets[i]=md.value;
+  ans[i]=v; buildMed();
+  document.getElementById('mwarn').classList.toggle('show',hasBlockingYes());
+  updateSendGate();
+}
+
+/* ── BLOQUEO DE ENVÍO SI HAY RESPUESTAS "SÍ" EN EL CUESTIONARIO MÉDICO ──
+   Para preguntas CON subpreguntas: la pregunta principal es solo una categoría.
+   Solo bloquea si alguna SUBpregunta concreta tiene un "Sí".
+   Para preguntas SIN subpreguntas: un "Sí" en la pregunta principal bloquea directamente. */
+function hasBlockingYes(){
+  const t=TRANSLATIONS[lang];
+  return ans.some((a,i)=>{
+    if(a!==true) return false;
+    const boxes=t.boxes&&t.boxes[i];
+    if(!boxes) return true;
+    return !!(boxAns[i]&&Object.values(boxAns[i]).some(v=>v===true));
+  });
+}
+function medIncomplete(){
+  const t=TRANSLATIONS[lang];
+  return ans.some((a,i)=>{
+    if(a!==true) return false;
+    const boxes=t.boxes&&t.boxes[i];
+    if(!boxes) return false;
+    return boxes.some((_,j)=>!boxAns[i]||boxAns[i][j]===undefined);
+  });
+}
+function updateSendGate(){
+  const t=TRANSLATIONS[lang];
+  const blocked=hasBlockingYes();
+  const btn=document.getElementById('bsend');
+  const warn=document.getElementById('sendBlockWarn');
+  const warnText=document.getElementById('sendBlockText');
+  if(btn) btn.disabled=blocked;
+  if(warn) warn.classList.toggle('show',blocked);
+  if(warnText) warnText.textContent=t.blockedmsg;
+}
+
+function initSig(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  let drawing=false;
+  function resize(){
+    const w=cv.offsetWidth,h=cv.offsetHeight||160,dpr=window.devicePixelRatio||1;
+    cv.width=w*dpr;cv.height=h*dpr;ctx.scale(dpr,dpr);
+    ctx.strokeStyle='#1a2b3c';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
+  }
+  resize(); new ResizeObserver(resize).observe(cv);
+  function pos(e){const r=cv.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+  function start(e){e.preventDefault();drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();
+    document.getElementById('sig-'+id+'-ph').style.display='none';
+    document.getElementById('sig-'+id+'-ok').style.display='inline';}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);cv.addEventListener('mouseup',end);
+  cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});cv.addEventListener('touchend',end);
+}
+
+function clearSig(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  document.getElementById('sig-'+id+'-ph').style.display='';
+  document.getElementById('sig-'+id+'-ok').style.display='none';
+}
+
+function sigEmpty(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  return !ctx.getImageData(0,0,cv.width,cv.height).data.some(x=>x!==0);
+}
+
+function go(n){
+  const t=TRANSLATIONS[lang];
+  if(n===2&&step===1&&!v1())return;
+  if(n===3&&step===2&&!v2())return;
+  if(n===4&&step===3&&!v3())return;
+  if(n===4){updateSum();updateSendGate();}
+  document.getElementById('step'+step).classList.remove('active');
+  step=n;
+  document.getElementById('step'+step).classList.add('active');
+  for(let i=1;i<=4;i++){
+    const p=document.getElementById('ps'+i);
+    p.classList.remove('active','done');
+    if(i<n)p.classList.add('done');else if(i===n)p.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function v1(){
+  const t=TRANSLATIONS[lang];let ok=true;
+  ['fn','fa','fb','fe'].forEach(id=>document.getElementById(id).classList.remove('input-error'));
+  ['en','ea','eb','ee'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  if(!document.getElementById('fn').value.trim()){showE('fn','en',t.ename);ok=false;}
+  if(!document.getElementById('fa').value.trim()){showE('fa','ea',t.eapell);ok=false;}
+  if(!document.getElementById('fb').value){showE('fb','eb',t.ebirth);ok=false;}
+  const em=document.getElementById('fe').value.trim();
+  if(!em||!em.includes('@')){showE('fe','ee',t.eemail);ok=false;}
+  return ok;
+}
+
+function v2(){
+  const t=TRANSLATIONS[lang];
+  ans.forEach((a,i)=>{const md=document.getElementById('md'+i);if(md)dets[i]=md.value;});
+  if(ans.some(a=>a===null)){alert(t.emed);return false;}
+  if(medIncomplete()){alert(t.emed);return false;}
+  return true;
+}
+
+function v3(){
+  const t=TRANSLATIONS[lang];
+  if(sigEmpty('srv')||sigEmpty('rgpd')){alert(t.esig);return false;}
+  return true;
+}
+
+function showE(inp,err,msg){
+  document.getElementById(inp).classList.add('input-error');
+  const e=document.getElementById(err);e.textContent=msg;e.classList.add('show');
+}
+
+function updateSum(){
+  const t=TRANSLATIONS[lang];
+  const nm=(document.getElementById('fn').value||'')+' '+(document.getElementById('fa').value||'');
+  const rows=[
+    [t.sname,nm.trim()],[t.sbirth,document.getElementById('fb').value],
+    [t.slevel,document.getElementById('fl').value],[t.semail,document.getElementById('fe').value],
+    [t.sphone,document.getElementById('fp').value]
+  ];
+  const yc=ans.filter(a=>a===true).length;
+  document.getElementById('sumbox').innerHTML=rows.filter(r=>r[1]).map(r=>
+    `<div class="summary-row"><strong>${r[0]}</strong><span>${r[1]}</span></div>`).join('')+
+    (yc>0?`<div class="summary-row" style="color:var(--yellow)"><strong>⚠️</strong><span>${yc} ${t.p2} (+)</span></div>`:'');
+}
+
+async function enviar(){
+  const t=TRANSLATIONS[lang];
+  if(hasBlockingYes()){alert(t.blockedmsg);updateSendGate();return;}
+  if(!document.getElementById('faccept').checked){alert(t.eaccept);return;}
+  const btn=document.getElementById('bsend');
+  btn.disabled=true;btn.textContent=t.sending;
+  const hn=dets.map((d,i)=>ans[i]===true&&d?`Q${i+1}: ${d}`:'').filter(Boolean).join(' | ');
+  const payload={
+    name:document.getElementById('fn').value.trim(),
+    apellidos:document.getElementById('fa').value.trim(),
+    email:document.getElementById('fe').value.trim(),
+    phone:document.getElementById('fp').value.trim(),
+    dni:document.getElementById('fd').value.trim(),
+    birthdate:document.getElementById('fb').value,
+    dive_level:document.getElementById('fl').value,
+    health_ok:!ans.some(a=>a===true),
+    health_notes:hn,
+    med_answers:ans.map((a,i)=>({q:i+1,answer:a?'yes':'no',detail:dets[i]||''})),
+    sig_services:document.getElementById('sig-srv').toDataURL('image/png'),
+    sig_data:document.getElementById('sig-rgpd').toDataURL('image/png'),
+    language:lang
+  };
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),redirect:'follow',mode:'no-cors'});
+    document.getElementById('step4').classList.remove('active');
+    step=5;
+    document.getElementById('step5').classList.add('active');
+    for(let i=1;i<=4;i++){const p=document.getElementById('ps'+i);p.classList.remove('active');p.classList.add('done');}
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){
+    alert('Error al enviar. Por favor inténtalo de nuevo.');
+    btn.disabled=false;btn.textContent=t.send;
+  }
+}
+
+window.addEventListener('load',()=>{initSig('srv');initSig('rgpd');buildMed();apply();});
+</script>
+</body>
+</html>
