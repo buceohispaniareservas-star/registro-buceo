@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Buceo Hispania — Registro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#0077b6;--accent:#00b4d8;--navy:#023e8a;--bg:#f0f4f8;--card:#ffffff;--border:#ccd9e3;--text:#1a2b3c;--text2:#4a6580;--text3:#8fa8be;--green:#2d9b6f;--red:#c0392b;--yellow:#b8860b;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+.header{background:var(--navy);padding:20px;text-align:center}
+.header-logo{max-height:64px;max-width:200px;object-fit:contain;display:block;margin:0 auto 10px}
+.header h1{color:#fff;font-size:19px;font-weight:700}
+.header p{color:rgba(255,255,255,.7);font-size:12px;margin-top:3px}
+.lang-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.lang-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.lang-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.lang-flag{font-size:15px}
+.progress-bar{background:#fff;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.progress-steps{display:flex;align-items:center;max-width:600px;margin:0 auto}
+.p-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.p-step:not(:last-child)::after{content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.p-step.done::after{background:var(--primary)}
+.p-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);position:relative;z-index:1;transition:all .2s}
+.p-step.done .p-dot{background:var(--primary);border-color:var(--primary);color:#fff}
+.p-step.active .p-dot{border-color:var(--primary);color:var(--primary)}
+.p-label{font-size:10px;color:var(--text3);text-align:center;font-weight:500}
+.p-step.done .p-label,.p-step.active .p-label{color:var(--primary)}
+.form-wrap{max-width:640px;margin:0 auto;padding:16px}
+.step-panel{display:none}
+.step-panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;transition:border .15s;font-family:inherit;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary)}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a6580' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.form-group textarea{resize:vertical;min-height:68px}
+.required{color:var(--red)}
+.field-error{font-size:11px;color:var(--red);margin-top:3px;display:none}
+.field-error.show{display:block}
+.input-error{border-color:var(--red) !important}
+.med-q{border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;transition:all .15s}
+.med-q.yes{border-color:#e6ac00;background:#fffbf0}
+.med-q.no{border-color:#a8d5b5;background:#f5fff9}
+.med-q-text{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:10px}
+.med-qn{font-weight:700;color:var(--primary);margin-right:4px}
+.med-btns{display:flex;gap:8px}
+.med-btn{flex:1;padding:9px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.med-btn-yes.sel{background:#fff3cd;border-color:#e6ac00;color:#7d5a00}
+.med-btn-no.sel{background:#d4edda;border-color:var(--green);color:#155724}
+.med-cond{margin-top:10px;display:none}
+.med-cond.show{display:block}
+.med-cond label{font-size:11px;font-weight:600;color:#7d5a00;display:block;margin-bottom:4px}
+.med-cond textarea{width:100%;border:1.5px solid #e6ac00;border-radius:6px;padding:8px;font-size:12px;font-family:inherit;outline:none;background:#fff;resize:vertical;min-height:54px}
+.med-warn{background:#fff3cd;border:1px solid #e6ac00;border-radius:8px;padding:12px;font-size:12px;color:#7d5a00;margin-top:12px;display:none;gap:8px;line-height:1.5;align-items:flex-start}
+.med-warn.show{display:flex}
+.consent-text{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6;max-height:110px;overflow-y:auto;margin-bottom:12px}
+.sig-wrap{border:2px dashed var(--border);border-radius:10px;background:#fafcff;position:relative;overflow:hidden;touch-action:none}
+.sig-canvas{display:block;width:100%;cursor:crosshair;touch-action:none;height:150px}
+@media(min-width:600px){.sig-canvas{height:180px}}
+.sig-ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text3);font-size:13px;pointer-events:none;text-align:center;line-height:1.6}
+.sig-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:#fff}
+.sig-clear{background:none;border:1.5px solid var(--border);color:var(--text2);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+.sig-ok{font-size:11px;color:var(--green);font-weight:700;display:none}
+.summary-row{font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.summary-row strong{color:var(--text);min-width:90px;flex-shrink:0}
+.accept-box{margin-top:14px;padding:12px;background:#f0f8ff;border-radius:8px;border:1px solid #b8d4e8}
+.accept-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2);line-height:1.5}
+.accept-label input{margin-top:2px;width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.form-footer{display:flex;gap:10px;margin-top:8px}
+.btn-back{flex:1;padding:13px;border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-next{flex:2;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-next:disabled{background:var(--border);cursor:not-allowed}
+.success-card{text-align:center;padding:40px 20px}
+.success-icon{font-size:48px;margin-bottom:16px}
+.success-card h2{font-size:22px;color:var(--green);margin-bottom:10px}
+.success-card p{font-size:14px;color:var(--text2);line-height:1.7}
+@media(max-width:600px){.card{padding:14px}.header h1{font-size:16px}.p-label{display:none}}
+/* ── DNI capture step ── */
+.dni-alert-box{background:linear-gradient(135deg,#fff8e1,#fff3cd);border:1.5px solid #e6ac00;border-radius:10px;padding:13px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.dni-alert-box .dai-icon{font-size:22px;flex-shrink:0}
+.dni-alert-box .dai-text{font-size:12px;color:#7d5a00;line-height:1.55}
+.dni-alert-box .dai-text strong{display:block;font-size:13px;margin-bottom:3px}
+.camera-outer{background:#0d1520;border-radius:12px;overflow:hidden;position:relative;aspect-ratio:4/3;margin-bottom:12px;cursor:pointer}
+.camera-feed{width:100%;height:100%;object-fit:cover;display:block}
+.camera-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cam-guide-frame{width:84%;height:74%;border:2px solid rgba(0,180,216,.9);border-radius:6px;box-shadow:0 0 0 2000px rgba(0,0,0,.45);position:relative}
+.cam-guide-corner{position:absolute;width:14px;height:14px;border-color:#fff;border-style:solid}
+.cam-guide-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:3px 0 0 0}
+.cam-guide-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 3px 0 0}
+.cam-guide-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 3px}
+.cam-guide-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 3px 0}
+.cam-guide-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.85);font-size:10px;font-weight:600;white-space:nowrap;letter-spacing:.3px}
+.cam-scanline{position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,rgba(0,180,216,.9),transparent);border-radius:2px;box-shadow:0 0 8px rgba(0,180,216,.7);animation:scanAnim 2s ease-in-out infinite}
+@keyframes scanAnim{0%,100%{top:16%}50%{top:80%}}
+.cam-hint-bar{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:rgba(255,255,255,.7);font-size:10px}
+.cam-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;pointer-events:none}
+.cam-placeholder .cp-icon{font-size:28px}
+.dni-actions{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:8px;margin-bottom:12px}
+.dni-btn{padding:10px 4px;border-radius:9px;border:1.5px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;transition:all .15s}
+.dni-btn .db-icon{font-size:18px}
+.dni-btn-main{background:var(--primary);border-color:var(--primary);color:#fff}
+.dni-btn:active{opacity:.8}
+.dni-preview-area{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:4/3;margin-bottom:10px;background:#e8f0f7;display:none}
+.dni-preview-area img{width:100%;height:100%;object-fit:cover;display:block}
+.dni-ok-badge{position:absolute;top:8px;right:8px;background:var(--green);color:#fff;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700}
+.dni-front-note{background:#e8f4fd;border:1px solid #b3d7f0;border-radius:8px;padding:9px 12px;font-size:11px;color:var(--primary);font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.btn-skip-dni{width:100%;padding:11px;border:1.5px solid var(--border);background:var(--card);color:var(--text2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+.skip-warn{background:#fff3cd;border:1px solid #e6ac00;border-radius:8px;padding:10px 12px;font-size:11px;color:#7d5a00;line-height:1.5;margin-top:8px;display:none}
+.skip-warn.show{display:block}
+/* ── Signature step ── */
+.btn-firmar{width:100%;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+.btn-firmar:active{opacity:.8}
+.btn-firmar.secondary{background:#fff;border:1.5px solid var(--primary);color:var(--primary)}
+.sig-consent-reveal{display:none;margin-bottom:14px}
+.sig-canvas-reveal{display:none}
+.sig-confirmed{background:#f0fff6;border:1.5px solid var(--green);border-radius:10px;padding:14px 16px;display:none;align-items:center;gap:10px;font-size:14px;color:var(--green);font-weight:700}
+.sig-confirmed.show{display:flex}
+.sig-confirmed span.sc-icon{font-size:22px}
+/* ── DNI blink ── */
+.dni-blink-alert{padding:11px 14px;margin-bottom:14px;font-size:12px;font-weight:700;color:#7d5a00;text-align:center;letter-spacing:.2px;animation:alertBlink 1.4s ease-in-out infinite}
+@keyframes alertBlink{0%,100%{opacity:1}50%{opacity:0.28}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="data:image/png;base64,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" class="header-logo" alt="Hispania">
+  <h1>Buceo Hispania</h1>
+  <p id="h-sub">Formulario de registro</p>
+</div>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('es',this)"><span class="lang-flag">🇪🇸</span> Español</button>
+  <button class="lang-btn" onclick="setLang('en',this)"><span class="lang-flag">🇬🇧</span> English</button>
+  <button class="lang-btn" onclick="setLang('fr',this)"><span class="lang-flag">🇫🇷</span> Français</button>
+  <button class="lang-btn" onclick="setLang('de',this)"><span class="lang-flag">🇩🇪</span> Deutsch</button>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-steps">
+    <div class="p-step active" id="ps1"><div class="p-dot">1</div><div class="p-label" id="pl1">Datos</div></div>
+    <div class="p-step" id="ps2"><div class="p-dot">2</div><div class="p-label" id="pl2">Médico</div></div>
+    <div class="p-step" id="ps3"><div class="p-dot">3</div><div class="p-label" id="pl3">Firmas</div></div>
+    <div class="p-step" id="ps4"><div class="p-dot">4</div><div class="p-label" id="pl4">DNI</div></div>
+    <div class="p-step" id="ps5"><div class="p-dot">5</div><div class="p-label" id="pl5">Envío</div></div>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <!-- PASO 1 -->
+  <div class="step-panel active" id="step1">
+    <div class="card">
+      <div class="card-title"><span id="s1t">Datos personales</span></div>
+      <div class="form-row">
+        <div class="form-group"><label id="ln">Nombre <span class="required">*</span></label><input id="fn" type="text" autocomplete="given-name"><div class="field-error" id="en"></div></div>
+        <div class="form-group"><label id="la">Apellidos <span class="required">*</span></label><input id="fa" type="text" autocomplete="family-name"><div class="field-error" id="ea"></div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="lb">Fecha nacimiento <span class="required">*</span></label><input id="fb" type="date"><div class="field-error" id="eb"></div></div>
+        <div class="form-group"><label id="ld">DNI / Pasaporte</label><input id="fd" type="text" autocomplete="off"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label id="le">Email <span class="required">*</span></label><input id="fe" type="email" autocomplete="email"><div class="field-error" id="ee"></div></div>
+        <div class="form-group"><label id="lp">Teléfono</label><input id="fp" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="form-group">
+        <label id="ll">Nivel de buceo</label>
+        <select id="fl">
+          <option value="">—</option>
+          <option value="Sin experiencia" id="ol0">Sin experiencia</option>
+          <option value="Bautismo">Bautismo / Discovery</option>
+          <option value="Open Water (OW)">Open Water (OW)</option>
+          <option value="Advanced (AOW)">Advanced Open Water (AOW)</option>
+          <option value="Rescue Diver">Rescue Diver</option>
+          <option value="Divemaster">Divemaster</option>
+          <option value="Instructor">Instructor</option>
+          <option value="Snorkel">Snorkel</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer"><button class="btn-next" onclick="go(2)" id="bn1">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="step-panel" id="step2">
+    <div class="card">
+      <div class="card-title"><span id="s2t">Cuestionario médico</span></div>
+      <p id="s2i" style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px">Por favor responde con sinceridad. Una respuesta SÍ no impide la práctica del buceo, pero puede requerir la aprobación de un médico.</p>
+      <div id="medqs"></div>
+      <div class="med-warn" id="mwarn"><span style="font-size:18px;flex-shrink:0">⚠️</span><span id="mwt">Algunas respuestas requieren evaluación médica previa. El centro se pondrá en contacto contigo.</span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(1)" id="bb2">← Atrás</button><button class="btn-next" onclick="go(3)" id="bn2">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="step-panel" id="step3">
+    <!-- Firma 1: Servicios -->
+    <div class="card" id="sig-srv-card">
+      <div class="card-title"><span id="s3ts">Consentimiento de servicios</span></div>
+      <div id="sig-srv-s0">
+        <button class="btn-firmar" onclick="sigOpenConsent('srv')">✍️ <span id="bfSrv0">Firmar</span></button>
+      </div>
+      <div id="sig-srv-s1" class="sig-consent-reveal">
+        <div class="consent-text" id="ct-srv">DECLARACIÓN DE ASUNCIÓN DE RIESGOS Y PRÁCTICAS DE BUCEO SEGURO<br><br>Declaro voluntariamente que entiendo que el buceo autónomo es una actividad que conlleva riesgos intrínsecos que pueden provocar lesiones graves o incluso la muerte. Acepto y asumo plenamente dichos riesgos.<br><br>Mediante este documento, eximo de toda responsabilidad legal al centro de buceo, a sus instructores, guías y embarcaciones en caso de accidente, lesión, daño material o pérdida de cualquier tipo que pueda sufrir durante la actividad de buceo, salvo en los casos de negligencia grave o dolo por parte del centro.<br><br>Declaro que mi estado de salud es adecuado para la práctica del buceo y que no padezco ninguna enfermedad o condición médica que lo contraindique. Así mismo, declaro estar en posesión de la titulación de buceo requerida para la actividad contratada.<br><br>Me comprometo formalmente a realizar la actividad de forma responsable y a cumplir estrictamente con los siguientes estándares de seguridad:<br><br>- Respetar en todo momento las instrucciones del guía/instructor.<br>- No superar los límites de profundidad establecidos para mi titulación.<br>- Mantener en todo momento el control de flotabilidad.<br>- No separarse del grupo sin autorización del guía.<br>- Notificar inmediatamente cualquier incidencia o malestar al guía.</div>
+        <button class="btn-firmar" onclick="sigOpenCanvas('srv')">✍️ <span id="bfSrv1">Firmar</span></button>
+      </div>
+      <div id="sig-srv-s2" class="sig-canvas-reveal">
+        <div class="sig-wrap"><canvas class="sig-canvas" id="sig-srv"></canvas><div class="sig-ph" id="sig-srv-ph">✍️<br><span id="sig-srv-ph-txt">Firma aquí</span></div></div>
+        <div class="sig-bar"><button class="sig-clear" onclick="clearSig('srv')" id="bcs">Borrar</button><button class="btn-firmar" style="flex:none;padding:8px 18px;font-size:13px" onclick="sigConfirm('srv')"><span id="bConfSrvTxt">Confirmar</span></button></div>
+      </div>
+      <div class="sig-confirmed" id="sig-srv-confirmed"><span class="sc-icon">✅</span> <span id="sig-srv-ok">Firmado</span></div>
+    </div>
+    <!-- Firma 2: RGPD (oculta hasta la primera) -->
+    <div class="card" id="sig-rgpd-card" style="display:none">
+      <div class="card-title"><span id="s3tr">Consentimiento de datos (RGPD)</span></div>
+      <div id="sig-rgpd-s0">
+        <button class="btn-firmar" onclick="sigOpenConsent('rgpd')">✍️ <span id="bfRgpd0">Firmar</span></button>
+      </div>
+      <div id="sig-rgpd-s1" class="sig-consent-reveal">
+        <div class="consent-text" id="ct-rgpd">CLÁUSULA DE PROTECCIÓN DE DATOS PERSONALES, DERECHOS DE IMAGEN Y VIDEOVIGILANCIA (CCTV)<br><br>De conformidad con lo dispuesto en el Reglamento General de Protección de Datos (RGPD) y la normativa nacional vigente, se le informa sobre el tratamiento de sus datos personales y derechos de imagen.<br><br>1. Tratamiento de Datos Personales<br>Consiento expresamente que el centro de buceo trate mis datos personales y de contacto proporcionados en la hoja de registro. La finalidad de este tratamiento es la gestión administrativa de la actividad, la verificación de mis certificaciones de buceo y la coordinación en caso de emergencias médicas o de seguridad.<br><br>2. Sistema de Videovigilancia (CCTV) en el Centro<br>Sé que el centro cuenta con un sistema de cámaras de videovigilancia (CCTV) en sus instalaciones comunes. Acepto y consiento que mis imágenes sean grabadas durante mi estancia en el local. Entiendo que la única finalidad de este sistema es garantizar la seguridad de las personas, de los bienes y de las instalaciones. Dichas imágenes se borrarán en los plazos legales establecidos.<br><br>3. Consentimiento para Derechos de Imagen (Fotos y Vídeos de Buceo)<br>Autorizo al centro de buceo a captar imágenes o vídeos míos durante el desarrollo de las inmersiones o actividades formativas.</div>
+        <button class="btn-firmar" onclick="sigOpenCanvas('rgpd')">✍️ <span id="bfRgpd1">Firmar</span></button>
+      </div>
+      <div id="sig-rgpd-s2" class="sig-canvas-reveal">
+        <div class="sig-wrap"><canvas class="sig-canvas" id="sig-rgpd"></canvas><div class="sig-ph" id="sig-rgpd-ph">✍️<br><span id="sig-rgpd-ph-txt">Firma aquí</span></div></div>
+        <div class="sig-bar"><button class="sig-clear" onclick="clearSig('rgpd')" id="bcr">Borrar</button><button class="btn-firmar" style="flex:none;padding:8px 18px;font-size:13px" onclick="sigConfirm('rgpd')"><span id="bConfRgpdTxt">Confirmar</span></button></div>
+      </div>
+      <div class="sig-confirmed" id="sig-rgpd-confirmed"><span class="sc-icon">✅</span> <span id="sig-rgpd-ok">Firmado</span></div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(2)" id="bb3">← Atrás</button><button class="btn-next" onclick="go(4)" id="bn3" style="display:none">Siguiente →</button></div>
+  </div>
+
+  <!-- PASO 4 — DNI -->
+  <div class="step-panel" id="step4">
+    <div class="card">
+      <div class="card-title"><span id="s4t">🪪 Documento de identidad</span></div>
+
+      <div class="dni-blink-alert">⚠️ <span id="dniReqTitle">Obligatorio para la Reserva Marina de Cabo Tiñoso</span></div>
+
+      <!-- Cámara activa -->
+      <div id="dniCamWrap">
+        <div class="camera-outer" id="dniCamOuter">
+          <video id="dniVideo" class="camera-feed" autoplay playsinline muted style="display:none"></video>
+          <div class="cam-placeholder" id="dniPlaceholder">
+            <div class="cp-icon">📷</div>
+            <div id="dniPlaceholderTxt">Pulsa "Usar cámara" para empezar</div>
+          </div>
+          <div class="camera-guide" id="dniGuide" style="display:none">
+            <div class="cam-guide-frame">
+              <div class="cam-guide-corner tl"></div>
+              <div class="cam-guide-corner tr"></div>
+              <div class="cam-guide-corner bl"></div>
+              <div class="cam-guide-corner br"></div>
+              <div class="cam-guide-label" id="dniGuideLabel">Centra el documento aquí</div>
+            </div>
+            <div class="cam-scanline"></div>
+          </div>
+          <div class="cam-hint-bar" id="dniCamHint" style="display:none">Mantén el documento plano y bien iluminado</div>
+        </div>
+        <div class="dni-actions">
+          <button class="dni-btn" id="btnGallery" onclick="dniFromGallery()"><span class="db-icon">🖼️</span><span id="dniGalleryLbl">Galería</span></button>
+          <button class="dni-btn dni-btn-main" id="btnCamera" onclick="dniCamera()"><span class="db-icon">📷</span><span id="dniCameraLbl">Usar cámara</span></button>
+          <button class="dni-btn" id="btnPdf" onclick="dniFromPdf()"><span class="db-icon">📄</span><span id="dniPdfLbl">PDF</span></button>
+        </div>
+        <input type="file" id="dniFileInput" accept="image/*" capture="environment" style="display:none" onchange="dniFileChosen(this)">
+        <input type="file" id="dniGalleryInput" accept="image/*,application/pdf" style="display:none" onchange="dniFileChosen(this)">
+        <canvas id="dniCanvas" style="display:none"></canvas>
+      </div>
+
+      <!-- Preview tras captura -->
+      <div class="dni-preview-area" id="dniPreview">
+        <img id="dniPreviewImg" src="" alt="DNI">
+        <div class="dni-ok-badge" id="dniOkBadge">✓ Capturado</div>
+      </div>
+      <button class="btn-skip-dni" id="dniRetryBtn" onclick="dniRetry()" style="display:none" id="dniRetryTxt">🔄 Repetir / cambiar foto</button>
+
+      <div class="dni-front-note"><span>ℹ️</span><span id="dniFrontNote">Solo cara delantera · Tus datos se almacenan de forma segura</span></div>
+
+      <!-- Botón saltar -->
+      <button class="btn-skip-dni" id="btnSkipDni" onclick="dniSkip()"><span id="dniSkipLbl">Continuar sin foto de DNI →</span></button>
+      <div class="skip-warn" id="skipWarn">
+        <strong id="skipWarnTitle">⚠️ Atención</strong><br>
+        <span id="skipWarnText">Sin foto de DNI no podrás bucear en la Reserva Marina de Cabo Tiñoso.</span>
+      </div>
+    </div>
+
+    <!-- Titulación -->
+    <div class="card" style="margin-top:0">
+      <div class="card-title"><span id="s4tit">🤿 Titulación de Buceo</span></div>
+      <div id="titCamWrap">
+        <div class="camera-outer" id="titCamOuter">
+          <video id="titVideo" class="camera-feed" autoplay playsinline muted style="display:none"></video>
+          <div class="cam-placeholder" id="titPlaceholder">
+            <div class="cp-icon">🤿</div>
+            <div id="titPlaceholderTxt">Pulsa "Usar cámara" para empezar</div>
+          </div>
+          <div class="camera-guide" id="titGuide" style="display:none">
+            <div class="cam-guide-frame">
+              <div class="cam-guide-corner tl"></div>
+              <div class="cam-guide-corner tr"></div>
+              <div class="cam-guide-corner bl"></div>
+              <div class="cam-guide-corner br"></div>
+              <div class="cam-guide-label" id="titGuideLabel">Centra la tarjeta de titulación aquí</div>
+            </div>
+            <div class="cam-scanline"></div>
+          </div>
+          <div class="cam-hint-bar" id="titCamHint" style="display:none">Mantén la tarjeta plana y bien iluminada</div>
+        </div>
+        <div class="dni-actions">
+          <button class="dni-btn" onclick="titFromGallery()"><span class="db-icon">🖼️</span><span id="titGalleryLbl">Galería</span></button>
+          <button class="dni-btn dni-btn-main" id="btnTitCamera" onclick="titCamera()"><span class="db-icon">📷</span><span id="titCameraLbl">Usar cámara</span></button>
+          <button class="dni-btn" onclick="titFromGallery()"><span class="db-icon">📄</span><span id="titPdfLbl">PDF</span></button>
+        </div>
+        <input type="file" id="titFileInput" accept="image/*,application/pdf" style="display:none" onchange="titFileChosen(this)">
+        <canvas id="titCanvas" style="display:none"></canvas>
+      </div>
+      <div class="dni-preview-area" id="titPreview">
+        <img id="titPreviewImg" style="width:100%;height:100%;object-fit:cover">
+        <div class="dni-preview-overlay"></div>
+      </div>
+      <button class="doc-retry dni-btn" id="titRetryBtn" style="display:none;width:100%;margin-bottom:10px" onclick="titRetry()">🔄 <span id="titRetryTxt">Repetir foto</span></button>
+      <div class="skip-warn" id="titSkipWarn">
+        <span id="titSkipText">Recomendamos subir tu titulación de buceo.</span>
+      </div>
+    </div>
+
+    <!-- Seguro de buceo -->
+    <div class="card" style="margin-top:0">
+      <div class="card-title"><span id="s4seg">🛡️ Seguro de Buceo</span></div>
+      <div id="segCamWrap">
+        <div class="camera-outer" id="segCamOuter">
+          <video id="segVideo" class="camera-feed" autoplay playsinline muted style="display:none"></video>
+          <div class="cam-placeholder" id="segPlaceholder">
+            <div class="cp-icon">🛡️</div>
+            <div id="segPlaceholderTxt">Pulsa "Usar cámara" para empezar</div>
+          </div>
+          <div class="camera-guide" id="segGuide" style="display:none">
+            <div class="cam-guide-frame">
+              <div class="cam-guide-corner tl"></div>
+              <div class="cam-guide-corner tr"></div>
+              <div class="cam-guide-corner bl"></div>
+              <div class="cam-guide-corner br"></div>
+              <div class="cam-guide-label" id="segGuideLabel">Centra la póliza o tarjeta de seguro aquí</div>
+            </div>
+            <div class="cam-scanline"></div>
+          </div>
+          <div class="cam-hint-bar" id="segCamHint" style="display:none">Mantén el documento plano y bien iluminado</div>
+        </div>
+        <div class="dni-actions">
+          <button class="dni-btn" onclick="segFromGallery()"><span class="db-icon">🖼️</span><span id="segGalleryLbl">Galería</span></button>
+          <button class="dni-btn dni-btn-main" id="btnSegCamera" onclick="segCamera()"><span class="db-icon">📷</span><span id="segCameraLbl">Usar cámara</span></button>
+          <button class="dni-btn" onclick="segFromGallery()"><span class="db-icon">📄</span><span id="segPdfLbl">PDF</span></button>
+        </div>
+        <input type="file" id="segFileInput" accept="image/*,application/pdf" style="display:none" onchange="segFileChosen(this)">
+        <canvas id="segCanvas" style="display:none"></canvas>
+      </div>
+      <div class="dni-preview-area" id="segPreview">
+        <img id="segPreviewImg" style="width:100%;height:100%;object-fit:cover">
+        <div class="dni-preview-overlay"></div>
+      </div>
+      <button class="doc-retry dni-btn" id="segRetryBtn" style="display:none;width:100%;margin-bottom:10px" onclick="segRetry()">🔄 <span id="segRetryTxt">Repetir foto</span></button>
+      <div class="skip-warn" id="segSkipWarn">
+        <span id="segSkipText">Si no dispones de seguro propio, el centro dispone de seguro de buceo diario.</span>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn-back" onclick="go(3)" id="bb4">← Atrás</button>
+      <button class="btn-next" onclick="go(5)" id="bn4">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- PASO 5 — Resumen y envío -->
+  <div class="step-panel" id="step5">
+    <div class="card">
+      <div class="card-title"><span id="s5t">Resumen y envío</span></div>
+      <div id="sumbox"></div>
+      <div class="accept-box">
+        <label class="accept-label"><input type="checkbox" id="faccept"><span id="lacct">He leído y acepto todos los consentimientos. Declaro que los datos son verídicos.</span></label>
+      </div>
+    </div>
+    <div class="form-footer"><button class="btn-back" onclick="go(4)" id="bb5">← Atrás</button><button class="btn-next" onclick="enviar()" id="bsend">Enviar registro</button></div>
+  </div>
+
+  <!-- ÉXITO -->
+  <div class="step-panel" id="step6">
+    <div class="card success-card">
+      <div class="success-icon">✅</div>
+      <h2 id="s6t">¡Registro completado!</h2>
+      <p id="s6p">Tus datos han sido registrados correctamente. Recibirás una confirmación por email. ¡Te esperamos!</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CONSENT_SRV  = document.getElementById('ct-srv').textContent;
+const CONSENT_RGPD = document.getElementById('ct-rgpd').textContent;
+
+const T = {
+  es:{sub:'Formulario de registro',p1:'Datos',p2:'Médico',p3:'Firmas',p4:'DNI',p5:'Envío',
+    s1:'Datos personales',s2:'Cuestionario médico',s3s:'Consentimiento de servicios',s3r:'Consentimiento de datos (RGPD)',
+    s4:'🪪 Documento de identidad',s5:'Resumen y envío',
+    s2i:'Por favor responde con sinceridad. Una respuesta SÍ no impide la práctica del buceo, pero puede requerir la aprobación de un médico.',
+    dniReqTitle:'Obligatorio para bucear en la Reserva Marina de Cabo Tiñoso',
+    dniReqText:'Por normativa de la Reserva Marina, necesitamos verificar tu identidad. Fotografía la cara delantera de tu DNI, NIE, pasaporte o carnet de conducir.',
+    dniFrontNote:'Solo cara delantera · Tus datos se almacenan de forma segura',
+    dniGuideLabel:'Centra el documento aquí',
+    dniPlaceholderTxt:'Pulsa "Usar cámara" para empezar',
+    dniGalleryLbl:'Galería',dniCameraLbl:'Usar cámara',dniCameraShoot:'Capturar',dniPdfLbl:'PDF',
+    dniOkBadge:'✓ Capturado',dniRetryTxt:'🔄 Repetir / cambiar foto',
+    dniCamHint:'Mantén el documento plano y bien iluminado',
+    dniSkipLbl:'Continuar sin foto de DNI →',
+    skipWarnTitle:'⚠️ Atención',
+    skipWarnText:'Sin foto de DNI no podrás bucear en la Reserva Marina de Cabo Tiñoso.',
+    sdni:'DNI foto',
+    ln:'Nombre',la:'Apellidos',lb:'Fecha nacimiento',ld:'DNI / Pasaporte',le:'Email',lp:'Teléfono',ll:'Nivel de buceo',
+    lss:'Firma (servicios)',lsr:'Firma (RGPD)',yes:'Sí',no:'No',
+    det:'Por favor da más detalles:',
+    warn:'Algunas respuestas requieren evaluación médica previa. El centro se pondrá en contacto contigo.',
+    firmar:'Firmar',confirmar:'Confirmar firma',sigPh:'Firma aquí con el dedo',
+    next:'Siguiente →',back:'← Atrás',send:'Enviar registro',clear:'Borrar',signed:'✓ Firmado',
+    acct:'He leído y acepto todos los consentimientos. Declaro que los datos son verídicos.',
+    s6t:'¡Registro completado!',s6p:'Tus datos han sido registrados correctamente. Recibirás una confirmación por email. ¡Te esperamos!',
+    ename:'El nombre es obligatorio',eapell:'Los apellidos son obligatorios',ebirth:'La fecha de nacimiento es obligatoria',eemail:'Email no válido',
+    eaccept:'Debes aceptar los consentimientos',esig:'Ambas firmas son obligatorias',emed:'Responde todas las preguntas médicas',sending:'Enviando...',
+    sname:'Nombre',sbirth:'Nacimiento',slevel:'Nivel',semail:'Email',sphone:'Teléfono',
+    sdniok:'🪪 Adjuntado',sdnino:'Sin foto de DNI',
+    qs:['¿Has tenido alguna enfermedad o cirugía del corazón, o te han dicho que tienes un soplo u otro problema cardíaco?',
+      '¿Tienes tensión arterial alta o tomas medicación para la tensión?',
+      '¿Has tenido alguna vez un derrame cerebral, accidente isquémico transitorio (AIT) o pérdida de consciencia?',
+      '¿Tienes o has tenido alguna enfermedad o problema respiratorio (asma activo, bronquitis crónica, neumotórax espontáneo)?',
+      '¿Estás embarazada o crees que podrías estarlo?',
+      '¿Tienes diabetes?',
+      '¿Tienes problemas crónicos de oídos o sinusitis, o has sido operado/a de oídos, nariz o garganta?',
+      '¿Tienes alguna enfermedad del sistema nervioso (epilepsia, convulsiones, esclerosis múltiple, Parkinson)?',
+      '¿Estás tomando algún medicamento prescrito por un médico (excepto anticonceptivos o antimaláricos)?',
+      '¿Tienes alguna alergia grave, has tenido alguna reacción anafiláctica, o existe alguna otra condición médica que pueda afectar a tu seguridad bajo el agua?']},
+  en:{sub:'Registration form',p1:'Details',p2:'Medical',p3:'Signatures',p4:'ID',p5:'Submit',
+    s1:'Personal details',s2:'Medical questionnaire',s3s:'Service consent',s3r:'Data consent (GDPR)',
+    s4:'🪪 Identity document',s5:'Summary & submission',
+    s2i:'Please answer honestly. A YES answer does not necessarily prevent you from diving, but may require medical clearance.',
+    dniReqTitle:'Required to dive in the Cabo Tiñoso Marine Reserve',
+    dniReqText:'Marine Reserve regulations require us to verify your identity. Please photograph the front of your ID card, NIE, passport or driving licence.',
+    dniFrontNote:'Front side only · Your data is stored securely',
+    dniGuideLabel:'Centre document here',
+    dniPlaceholderTxt:'Tap "Use camera" to start',
+    dniGalleryLbl:'Gallery',dniCameraLbl:'Use camera',dniCameraShoot:'Capture',dniPdfLbl:'PDF',
+    dniOkBadge:'✓ Captured',dniRetryTxt:'🔄 Retake / change photo',
+    dniCamHint:'Keep document flat and well-lit',
+    dniSkipLbl:'Continue without ID photo →',
+    skipWarnTitle:'⚠️ Warning',
+    skipWarnText:'Without an ID photo you will not be able to dive in the Cabo Tiñoso Marine Reserve.',
+    sdni:'ID photo',
+    ln:'First name',la:'Last name',lb:'Date of birth',ld:'ID / Passport',le:'Email',lp:'Phone',ll:'Diving level',
+    lss:'Signature (services)',lsr:'Signature (GDPR)',yes:'Yes',no:'No',
+    det:'Please provide more details:',
+    warn:'Some answers require prior medical evaluation. The centre will contact you before the activity.',
+    firmar:'Sign',confirmar:'Confirm signature',sigPh:'Sign here with finger or mouse',
+    next:'Next →',back:'← Back',send:'Submit registration',clear:'Clear',signed:'✓ Signed',
+    acct:'I have read and accept all consents. I declare that the information provided is true and accurate.',
+    s6t:'Registration complete!',s6p:'Your details have been registered. You will receive a confirmation email. See you soon!',
+    ename:'First name is required',eapell:'Last name is required',ebirth:'Date of birth is required',eemail:'Invalid email address',
+    eaccept:'You must accept the consents',esig:'Both signatures are required',emed:'Please answer all medical questions',sending:'Sending...',
+    sname:'Name',sbirth:'Born',slevel:'Level',semail:'Email',sphone:'Phone',
+    sdniok:'🪪 Attached',sdnino:'No ID photo',
+    qs:['Have you ever had or been told you have a heart disease, heart surgery, or heart murmur?',
+      'Do you have high blood pressure or take medication for blood pressure?',
+      'Have you ever had a stroke, transient ischaemic attack (TIA), or loss of consciousness?',
+      'Do you have or have you had any lung or breathing problems (active asthma, chronic bronchitis, spontaneous pneumothorax)?',
+      'Are you pregnant or do you think you might be pregnant?',
+      'Do you have diabetes?',
+      'Do you have chronic ear or sinus problems, or have you had surgery on your ears, nose or throat?',
+      'Do you have any nervous system disorder (epilepsy, seizures, multiple sclerosis, Parkinson\'s disease)?',
+      'Are you currently taking any prescription medication (other than contraceptives or anti-malarials)?',
+      'Do you have any severe allergy, have you had an anaphylactic reaction, or is there any other medical condition that may affect your safety underwater?']},
+  fr:{sub:'Formulaire d\'inscription',p1:'Données',p2:'Médical',p3:'Signatures',p4:'CNI',p5:'Envoi',
+    s1:'Données personnelles',s2:'Questionnaire médical',s3s:'Consentement services',s3r:'Consentement données (RGPD)',
+    s4:'🪪 Pièce d\'identité',s5:'Résumé & envoi',
+    s2i:'Veuillez répondre honnêtement. Une réponse OUI n\'empêche pas nécessairement la plongée, mais peut nécessiter un avis médical.',
+    dniReqTitle:'Obligatoire pour plonger dans la Réserve Marine de Cabo Tiñoso',
+    dniReqText:'La réglementation de la Réserve Marine nous impose de vérifier votre identité. Veuillez photographier le recto de votre CNI, passeport ou permis de conduire.',
+    dniFrontNote:'Recto uniquement · Vos données sont stockées en sécurité',
+    dniGuideLabel:'Centrez le document ici',
+    dniPlaceholderTxt:'Appuyez sur "Utiliser caméra" pour commencer',
+    dniGalleryLbl:'Galerie',dniCameraLbl:'Utiliser caméra',dniCameraShoot:'Capturer',dniPdfLbl:'PDF',
+    dniOkBadge:'✓ Capturé',dniRetryTxt:'🔄 Reprendre / changer la photo',
+    dniCamHint:'Gardez le document à plat et bien éclairé',
+    dniSkipLbl:'Continuer sans photo d\'identité →',
+    skipWarnTitle:'⚠️ Attention',
+    skipWarnText:'Sans photo d\'identité vous ne pourrez pas plonger dans la Réserve Marine de Cabo Tiñoso.',
+    sdni:'Photo CNI',
+    ln:'Prénom',la:'Nom',lb:'Date de naissance',ld:'CNI / Passeport',le:'Email',lp:'Téléphone',ll:'Niveau de plongée',
+    lss:'Signature (services)',lsr:'Signature (RGPD)',yes:'Oui',no:'Non',
+    det:'Veuillez donner plus de détails :',
+    warn:'Certaines réponses nécessitent une évaluation médicale préalable. Le centre vous contactera avant l\'activité.',
+    next:'Suivant →',back:'← Retour',send:'Envoyer l\'inscription',clear:'Effacer',signed:'✓ Signé',firmar:'Signer',confirmar:'Confirmer',sigPh:'Signez ici',esig:'Signature requise',
+    acct:'J\'ai lu et j\'accepte tous les consentements. Je déclare que les informations fournies sont véridiques.',
+    s6t:'Inscription complète !',s6p:'Vos données ont été enregistrées. Vous recevrez un email de confirmation. À bientôt !',
+    ename:'Le prénom est obligatoire',eapell:'Le nom est obligatoire',ebirth:'La date de naissance est obligatoire',eemail:'Email invalide',
+    eaccept:'Vous devez accepter les consentements',esig:'Les deux signatures sont obligatoires',emed:'Veuillez répondre à toutes les questions médicales',sending:'Envoi en cours...',
+    sname:'Nom',sbirth:'Né(e)',slevel:'Niveau',semail:'Email',sphone:'Téléphone',
+    sdniok:'🪪 Jointe',sdnino:'Pas de photo CNI',
+    qs:['Avez-vous eu ou avez-vous une maladie cardiaque, une chirurgie cardiaque ou un souffle au cœur ?',
+      'Avez-vous de l\'hypertension artérielle ou prenez-vous des médicaments pour la tension ?',
+      'Avez-vous jamais eu un AVC, un AIT ou une perte de connaissance ?',
+      'Avez-vous ou avez-vous eu des problèmes pulmonaires ou respiratoires (asthme actif, bronchite chronique, pneumothorax spontané) ?',
+      'Êtes-vous enceinte ou pensez-vous pouvoir l\'être ?',
+      'Avez-vous le diabète ?',
+      'Avez-vous des problèmes chroniques d\'oreilles ou de sinus, ou avez-vous été opéré(e) des oreilles, du nez ou de la gorge ?',
+      'Avez-vous une maladie du système nerveux (épilepsie, convulsions, sclérose en plaques, Parkinson) ?',
+      'Prenez-vous actuellement des médicaments sur ordonnance (sauf contraceptifs ou antipaludéens) ?',
+      'Avez-vous une allergie grave, avez-vous eu une réaction anaphylactique ou existe-t-il toute autre condition médicale pouvant affecter votre sécurité sous l\'eau ?']},
+  de:{sub:'Anmeldeformular',p1:'Daten',p2:'Medizin',p3:'Unterschriften',p4:'Ausweis',p5:'Senden',
+    s1:'Persönliche Daten',s2:'Medizinischer Fragebogen',s3s:'Einwilligung Leistungen',s3r:'Einwilligung Daten (DSGVO)',
+    s4:'🪪 Ausweisdokument',s5:'Zusammenfassung & Senden',
+    s2i:'Bitte antworten Sie ehrlich. Ein JA schließt das Tauchen nicht unbedingt aus, kann aber eine ärztliche Freigabe erfordern.',
+    dniReqTitle:'Pflicht zum Tauchen im Meeresschutzgebiet Cabo Tiñoso',
+    dniReqText:'Die Vorschriften des Meeresschutzgebiets verpflichten uns zur Identitätsprüfung. Fotografieren Sie bitte die Vorderseite Ihres Ausweises, Reisepasses oder Führerscheins.',
+    dniFrontNote:'Nur Vorderseite · Ihre Daten werden sicher gespeichert',
+    dniGuideLabel:'Dokument hier zentrieren',
+    dniPlaceholderTxt:'Tippen Sie auf „Kamera verwenden" um zu starten',
+    dniGalleryLbl:'Galerie',dniCameraLbl:'Kamera',dniCameraShoot:'Aufnehmen',dniPdfLbl:'PDF',
+    dniOkBadge:'✓ Aufgenommen',dniRetryTxt:'🔄 Wiederholen / Foto ändern',
+    dniCamHint:'Dokument flach halten und gut beleuchten',
+    dniSkipLbl:'Ohne Ausweisfoto fortfahren →',
+    skipWarnTitle:'⚠️ Achtung',
+    skipWarnText:'Ohne Ausweis-Foto dürfen Sie nicht im Meeresschutzgebiet Cabo Tiñoso tauchen.',
+    sdni:'Ausweis-Foto',
+    ln:'Vorname',la:'Nachname',lb:'Geburtsdatum',ld:'Ausweis / Reisepass',le:'E-Mail',lp:'Telefon',ll:'Tauchniveau',
+    lss:'Unterschrift (Leistungen)',lsr:'Unterschrift (DSGVO)',yes:'Ja',no:'Nein',
+    det:'Bitte geben Sie weitere Details an:',
+    warn:'Einige Antworten erfordern eine ärztliche Voruntersuchung. Das Zentrum wird Sie vor der Aktivität kontaktieren.',
+    firmar:'Unterschreiben',confirmar:'Unterschrift bestätigen',sigPh:'Hier mit dem Finger unterschreiben',
+    next:'Weiter →',back:'← Zurück',send:'Registrierung senden',clear:'Löschen',signed:'✓ Unterschrieben',
+    acct:'Ich habe alle Einwilligungen gelesen und akzeptiere sie. Ich erkläre, dass die Angaben der Wahrheit entsprechen.',
+    s6t:'Registrierung abgeschlossen!',s6p:'Ihre Daten wurden erfolgreich registriert. Sie erhalten eine Bestätigungs-E-Mail. Wir freuen uns auf Sie!',
+    ename:'Vorname ist erforderlich',eapell:'Nachname ist erforderlich',ebirth:'Geburtsdatum ist erforderlich',eemail:'Ungültige E-Mail-Adresse',
+    eaccept:'Sie müssen den Einwilligungen zustimmen',esig:'Beide Unterschriften sind erforderlich',emed:'Bitte beantworten Sie alle medizinischen Fragen',sending:'Wird gesendet...',
+    sname:'Name',sbirth:'Geb.',slevel:'Niveau',semail:'E-Mail',sphone:'Telefon',
+    sdniok:'🪪 Angehängt',sdnino:'Kein Ausweis-Foto',
+    qs:['Haben Sie jemals eine Herzerkrankung, Herzoperation oder ein Herzgeräusch gehabt?',
+      'Haben Sie Bluthochdruck oder nehmen Sie Medikamente gegen Bluthochdruck?',
+      'Hatten Sie jemals einen Schlaganfall, eine TIA oder einen Bewusstseinsverlust?',
+      'Haben oder hatten Sie Lungen- oder Atemprobleme (aktives Asthma, chronische Bronchitis, Spontanpneumothorax)?',
+      'Sind Sie schwanger oder könnten Sie schwanger sein?',
+      'Haben Sie Diabetes?',
+      'Haben Sie chronische Ohren- oder Sinusprobleme oder wurden Sie an Ohren, Nase oder Rachen operiert?',
+      'Haben Sie eine Erkrankung des Nervensystems (Epilepsie, Krampfanfälle, Multiple Sklerose, Parkinson)?',
+      'Nehmen Sie derzeit verschreibungspflichtige Medikamente (außer Verhütungsmittel oder Malariamittel)?',
+      'Haben Sie eine schwere Allergie, hatten Sie eine anaphylaktische Reaktion oder gibt es einen anderen Gesundheitszustand, der Ihre Sicherheit unter Wasser beeinträchtigen könnte?']}
+};
+
+let lang='es', step=1;
+const ans=new Array(10).fill(null), dets=new Array(10).fill('');
+let dniPhotoData='', dniStream=null, dniCamActive=false;
+let titPhotoData='', titStream=null, titCamActive=false;
+let segPhotoData='', segStream=null, segCamActive=false;
+
+function setLang(l,btn){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  apply();
+}
+
+function apply(){
+  const t=T[lang];
+  const ids={
+    'h-sub':t.sub,'pl1':t.p1,'pl2':t.p2,'pl3':t.p3,'pl4':t.p4,'pl5':t.p5,
+    's1t':t.s1,'s2t':t.s2,'s3ts':t.s3s,'s3tr':t.s3r,'s4t':t.s4,'s4tit':t.s4tit||'🤿 Titulación de Buceo','s4seg':t.s4seg||'🛡️ Seguro de Buceo','s5t':t.s5,
+    's2i':t.s2i,'mwt':t.warn,
+    'bn1':t.next,'bb2':t.back,'bn2':t.next,'bb3':t.back,'bn4':t.next,'bb4':t.back,'bb5':t.back,'bsend':t.send,
+    'bfSrv0':t.firmar,'bfSrv1':t.firmar,'bfRgpd0':t.firmar,'bfRgpd1':t.firmar,
+    'bConfSrvTxt':t.confirmar,'bConfRgpdTxt':t.confirmar,
+    'bcs':t.clear,'bcr':t.clear,'sig-srv-ok':t.signed,'sig-rgpd-ok':t.signed,
+    'lacct':t.acct,'s6t':t.s6t,'s6p':t.s6p,
+    'dniReqTitle':t.dniReqTitle,
+    'dniPlaceholderTxt':t.dniPlaceholderTxt,'dniGuideLabel':t.dniGuideLabel,
+    'dniGalleryLbl':t.dniGalleryLbl,'dniCameraLbl':t.dniCameraLbl,'dniPdfLbl':t.dniPdfLbl,
+    'dniOkBadge':t.dniOkBadge,'dniFrontNote':t.dniFrontNote,
+    'dniSkipLbl':t.dniSkipLbl,'skipWarnTitle':t.skipWarnTitle,'skipWarnText':t.skipWarnText,
+    'dniCamHint':t.dniCamHint,
+    'sig-srv-ph-txt':t.sigPh,'sig-rgpd-ph-txt':t.sigPh
+  };
+  Object.entries(ids).forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  document.getElementById('ln').innerHTML=t.ln+' <span class="required">*</span>';
+  document.getElementById('la').innerHTML=t.la+' <span class="required">*</span>';
+  document.getElementById('lb').innerHTML=t.lb+' <span class="required">*</span>';
+  document.getElementById('ld').textContent=t.ld;
+  document.getElementById('le').innerHTML=t.le+' <span class="required">*</span>';
+  document.getElementById('lp').textContent=t.lp;
+  document.getElementById('ll').textContent=t.ll;
+  // retry button text (has no child span with id)
+  const rb=document.getElementById('dniRetryBtn');
+  if(rb) rb.textContent=t.dniRetryTxt;
+  buildMed();
+  updateSum();
+}
+
+function buildMed(){
+  const t=T[lang], c=document.getElementById('medqs');
+  c.innerHTML='';
+  t.qs.forEach((q,i)=>{
+    const a=ans[i], isY=a===true, isN=a===false;
+    const d=document.createElement('div');
+    d.className='med-q'+(isY?' yes':isN?' no':'');
+    d.innerHTML=`<div class="med-q-text"><span class="med-qn">${i+1}.</span>${q}</div>
+      <div class="med-btns">
+        <button class="med-btn med-btn-yes${isY?' sel':''}" onclick="setAns(${i},true)">${t.yes}</button>
+        <button class="med-btn med-btn-no${isN?' sel':''}" onclick="setAns(${i},false)">${t.no}</button>
+      </div>
+      <div class="med-cond${isY?' show':''}" id="mc${i}">
+        <label>${t.det}</label>
+        <textarea id="md${i}" onchange="dets[${i}]=this.value">${dets[i]||''}</textarea>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function setAns(i,v){
+  const md=document.getElementById('md'+i);
+  if(md) dets[i]=md.value;
+  ans[i]=v;
+  buildMed();
+  document.getElementById('mwarn').classList.toggle('show',ans.some(a=>a===true));
+}
+
+var _sigData={srv:null,rgpd:null};
+function initSig(id){
+  const cv=document.getElementById('sig-'+id), ctx=cv.getContext('2d');
+  let drawing=false;
+  const ro=new ResizeObserver(function(){
+    if(_sigData[id])return; // no borrar si ya está confirmada
+    const w=cv.offsetWidth, h=cv.offsetHeight||150, dpr=window.devicePixelRatio||1;
+    cv.width=w*dpr; cv.height=h*dpr;
+    ctx.scale(dpr,dpr);
+    ctx.strokeStyle='#1a2b3c'; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round';
+  });
+  function resize(){
+    const w=cv.offsetWidth, h=cv.offsetHeight||150, dpr=window.devicePixelRatio||1;
+    cv.width=w*dpr; cv.height=h*dpr;
+    ctx.scale(dpr,dpr);
+    ctx.strokeStyle='#1a2b3c'; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round';
+  }
+  resize();
+  ro.observe(cv);
+  function pos(e){const r=cv.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+  function start(e){e.preventDefault();drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();document.getElementById('sig-'+id+'-ph').style.display='none';document.getElementById('sig-'+id+'-ok').style.display='inline';}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start); cv.addEventListener('mousemove',move); cv.addEventListener('mouseup',end);
+  cv.addEventListener('touchstart',start,{passive:false}); cv.addEventListener('touchmove',move,{passive:false}); cv.addEventListener('touchend',end);
+}
+
+function clearSig(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  document.getElementById('sig-'+id+'-ph').style.display='';
+  document.getElementById('sig-'+id+'-ok').style.display='none';
+}
+
+function sigEmpty(id){
+  const cv=document.getElementById('sig-'+id),ctx=cv.getContext('2d');
+  return !ctx.getImageData(0,0,cv.width,cv.height).data.some(x=>x!==0);
+}
+
+/* ── DNI capture ── */
+function dniCamera(){
+  const t=T[lang];
+  if(dniCamActive){dniSnap();return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}})
+    .then(stream=>{
+      dniStream=stream; dniCamActive=true;
+      const vid=document.getElementById('dniVideo');
+      vid.srcObject=stream; vid.style.display='block';
+      document.getElementById('dniPlaceholder').style.display='none';
+      document.getElementById('dniGuide').style.display='flex';
+      document.getElementById('dniCamHint').style.display='block';
+      const btn=document.getElementById('btnCamera');
+      btn.innerHTML=`<span class="db-icon">📸</span><span>${t.dniCameraShoot}</span>`;
+    })
+    .catch(()=>{document.getElementById('dniFileInput').click();});
+}
+
+function dniSnap(){
+  const vid=document.getElementById('dniVideo');
+  const cv=document.getElementById('dniCanvas');
+  cv.width=vid.videoWidth||640; cv.height=vid.videoHeight||480;
+  cv.getContext('2d').drawImage(vid,0,0);
+  dniPhotoData=cv.toDataURL('image/jpeg',0.88);
+  dniStopStream();
+  dniShowPreview(dniPhotoData,false);
+}
+
+function dniStopStream(){
+  if(dniStream){dniStream.getTracks().forEach(t=>t.stop());dniStream=null;}
+  dniCamActive=false;
+  document.getElementById('dniVideo').style.display='none';
+  document.getElementById('dniGuide').style.display='none';
+  document.getElementById('dniCamHint').style.display='none';
+}
+
+function dniFromGallery(){document.getElementById('dniGalleryInput').click();}
+function dniFromPdf(){document.getElementById('dniGalleryInput').click();}
+
+function dniFileChosen(input){
+  const file=input.files[0]; if(!file) return;
+  const isPdf=file.type==='application/pdf';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    dniPhotoData=e.target.result;
+    dniShowPreview(isPdf?null:e.target.result,isPdf);
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+
+function dniShowPreview(dataUrl,isPdf){
+  document.getElementById('dniCamWrap').style.display='none';
+  const prev=document.getElementById('dniPreview');
+  prev.style.display='block';
+  const img=document.getElementById('dniPreviewImg');
+  if(isPdf){
+    // Show PDF icon as placeholder
+    img.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 64 80%22%3E%3Crect width%3D%2264%22 height%3D%2280%22 rx%3D%224%22 fill%3D%22%23e74c3c%22%2F%3E%3Ctext x%3D%2232%22 y%3D%2248%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 fill%3D%22white%22 font-family%3D%22Arial%22%3EPDF%3C%2Ftext%3E%3C%2Fsvg%3E';
+    img.style.objectFit='contain';
+    img.style.padding='20px';
+  } else {
+    img.src=dataUrl;
+    img.style.objectFit='cover';
+    img.style.padding='0';
+  }
+  document.getElementById('dniRetryBtn').style.display='block';
+  document.getElementById('skipWarn').classList.remove('show');
+}
+
+function dniRetry(){
+  dniPhotoData='';
+  dniStopStream();
+  document.getElementById('dniCamWrap').style.display='block';
+  document.getElementById('dniPreview').style.display='none';
+  document.getElementById('dniRetryBtn').style.display='none';
+  document.getElementById('dniPlaceholder').style.display='flex';
+  const btn=document.getElementById('btnCamera');
+  btn.innerHTML=`<span class="db-icon">📷</span><span id="dniCameraLbl">${T[lang].dniCameraLbl}</span>`;
+}
+
+function dniSkip(){
+  document.getElementById('skipWarn').classList.add('show');
+}
+/* ── end DNI ── */
+
+    function sigOpenConsent(id){
+      document.getElementById('sig-'+id+'-s0').style.display='none';
+      var s1=document.getElementById('sig-'+id+'-s1');
+      s1.style.display='block';
+      s1.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    function sigOpenCanvas(id){
+      document.getElementById('sig-'+id+'-s1').style.display='none';
+      var s2=document.getElementById('sig-'+id+'-s2');
+      s2.style.display='block';
+      initSig(id);
+      s2.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    function sigConfirm(id){
+      if(sigEmpty(id)){alert(T[lang].esig||'Firma requerida');return;}
+      _sigData[id]=document.getElementById('sig-'+id).toDataURL('image/png'); // guardar antes de ocultar
+      document.getElementById('sig-'+id+'-s2').style.display='none';
+      document.getElementById('sig-'+id+'-confirmed').classList.add('show');
+      if(id==='srv'){
+        var rgpd=document.getElementById('sig-rgpd-card');
+        rgpd.style.display='block';
+        rgpd.scrollIntoView({behavior:'smooth',block:'nearest'});
+      } else if(id==='rgpd'){
+        document.getElementById('bn3').style.display='block';
+      }
+    }
+
+
+/* ── TITULACIÓN camera (mirrors dniCamera pattern) ── */
+function titCamera(){
+  const t=T[lang];
+  if(titCamActive){titSnap();return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}})
+    .then(stream=>{
+      titStream=stream; titCamActive=true;
+      const vid=document.getElementById('titVideo');
+      vid.srcObject=stream; vid.style.display='block';
+      document.getElementById('titPlaceholder').style.display='none';
+      document.getElementById('titGuide').style.display='flex';
+      document.getElementById('titCamHint').style.display='block';
+      document.getElementById('btnTitCamera').querySelector('.db-icon').textContent='📸';
+      document.getElementById('titCameraLbl').textContent=t.snap||'Capturar';
+    })
+    .catch(()=>{ document.getElementById('titFileInput').click(); });
+}
+function titSnap(){
+  const vid=document.getElementById('titVideo');
+  const cv=document.getElementById('titCanvas');
+  cv.width=vid.videoWidth||640; cv.height=vid.videoHeight||480;
+  cv.getContext('2d').drawImage(vid,0,0);
+  titPhotoData=cv.toDataURL('image/jpeg',0.88);
+  titStopStream();
+  titShowPreview(titPhotoData,false);
+}
+function titStopStream(){
+  if(titStream){titStream.getTracks().forEach(t=>t.stop());titStream=null;}
+  titCamActive=false;
+  document.getElementById('titVideo').style.display='none';
+  document.getElementById('titGuide').style.display='none';
+  document.getElementById('titCamHint').style.display='none';
+}
+function titFromGallery(){document.getElementById('titFileInput').click();}
+function titFileChosen(input){
+  const file=input.files[0]; if(!file) return;
+  const isPdf=file.type==='application/pdf';
+  const reader=new FileReader();
+  reader.onload=e=>{titPhotoData=e.target.result;titShowPreview(isPdf?null:e.target.result,isPdf);};
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function titShowPreview(dataUrl,isPdf){
+  document.getElementById('titCamWrap').style.display='none';
+  const prev=document.getElementById('titPreview');
+  prev.style.display='block';
+  const img=document.getElementById('titPreviewImg');
+  if(isPdf){img.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 64 80%22%3E%3Crect width%3D%2264%22 height%3D%2280%22 rx%3D%224%22 fill%3D%22%23e74c3c%22%2F%3E%3Ctext x%3D%2232%22 y%3D%2248%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 fill%3D%22white%22 font-family%3D%22Arial%22%3EPDF%3C%2Ftext%3E%3C%2Fsvg%3E';img.style.objectFit='contain';img.style.padding='20px';}
+  else{img.src=dataUrl;img.style.objectFit='cover';img.style.padding='0';}
+  document.getElementById('titRetryBtn').style.display='block';
+  document.getElementById('titSkipWarn').classList.remove('show');
+}
+function titRetry(){
+  titPhotoData=''; titStopStream();
+  document.getElementById('titCamWrap').style.display='block';
+  document.getElementById('titPreview').style.display='none';
+  document.getElementById('titRetryBtn').style.display='none';
+  document.getElementById('titPlaceholder').style.display='flex';
+  const btn=document.getElementById('btnTitCamera');
+  btn.querySelector('.db-icon').textContent='📷';
+  document.getElementById('titCameraLbl').textContent=T[lang].camera||'Usar cámara';
+}
+
+/* ── SEGURO camera (mirrors dniCamera pattern) ── */
+function segCamera(){
+  const t=T[lang];
+  if(segCamActive){segSnap();return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}})
+    .then(stream=>{
+      segStream=stream; segCamActive=true;
+      const vid=document.getElementById('segVideo');
+      vid.srcObject=stream; vid.style.display='block';
+      document.getElementById('segPlaceholder').style.display='none';
+      document.getElementById('segGuide').style.display='flex';
+      document.getElementById('segCamHint').style.display='block';
+      document.getElementById('btnSegCamera').querySelector('.db-icon').textContent='📸';
+      document.getElementById('segCameraLbl').textContent=t.snap||'Capturar';
+    })
+    .catch(()=>{ document.getElementById('segFileInput').click(); });
+}
+function segSnap(){
+  const vid=document.getElementById('segVideo');
+  const cv=document.getElementById('segCanvas');
+  cv.width=vid.videoWidth||640; cv.height=vid.videoHeight||480;
+  cv.getContext('2d').drawImage(vid,0,0);
+  segPhotoData=cv.toDataURL('image/jpeg',0.88);
+  segStopStream();
+  segShowPreview(segPhotoData,false);
+}
+function segStopStream(){
+  if(segStream){segStream.getTracks().forEach(t=>t.stop());segStream=null;}
+  segCamActive=false;
+  document.getElementById('segVideo').style.display='none';
+  document.getElementById('segGuide').style.display='none';
+  document.getElementById('segCamHint').style.display='none';
+}
+function segFromGallery(){document.getElementById('segFileInput').click();}
+function segFileChosen(input){
+  const file=input.files[0]; if(!file) return;
+  const isPdf=file.type==='application/pdf';
+  const reader=new FileReader();
+  reader.onload=e=>{segPhotoData=e.target.result;segShowPreview(isPdf?null:e.target.result,isPdf);};
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function segShowPreview(dataUrl,isPdf){
+  document.getElementById('segCamWrap').style.display='none';
+  const prev=document.getElementById('segPreview');
+  prev.style.display='block';
+  const img=document.getElementById('segPreviewImg');
+  if(isPdf){img.src='data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 64 80%22%3E%3Crect width%3D%2264%22 height%3D%2280%22 rx%3D%224%22 fill%3D%22%23e74c3c%22%2F%3E%3Ctext x%3D%2232%22 y%3D%2248%22 font-size%3D%2220%22 text-anchor%3D%22middle%22 fill%3D%22white%22 font-family%3D%22Arial%22%3EPDF%3C%2Ftext%3E%3C%2Fsvg%3E';img.style.objectFit='contain';img.style.padding='20px';}
+  else{img.src=dataUrl;img.style.objectFit='cover';img.style.padding='0';}
+  document.getElementById('segRetryBtn').style.display='block';
+  document.getElementById('segSkipWarn').classList.remove('show');
+}
+function segRetry(){
+  segPhotoData=''; segStopStream();
+  document.getElementById('segCamWrap').style.display='block';
+  document.getElementById('segPreview').style.display='none';
+  document.getElementById('segRetryBtn').style.display='none';
+  document.getElementById('segPlaceholder').style.display='flex';
+  const btn=document.getElementById('btnSegCamera');
+  btn.querySelector('.db-icon').textContent='📷';
+  document.getElementById('segCameraLbl').textContent=T[lang].camera||'Usar cámara';
+}
+
+
+
+function go(n){
+  if(n===2&&step===1&&!v1()) return;
+  if(n===3&&step===2&&!v2()) return;
+  if(n===4&&step===3&&!v3()) return;
+  if(n===5) updateSum();
+  // stop camera if leaving step 4
+  if(step===4&&n!==4){dniStopStream();titStopStream();segStopStream();}
+  document.getElementById('step'+step).classList.remove('active');
+  step=n;
+  document.getElementById('step'+step).classList.add('active');
+  for(let i=1;i<=5;i++){
+    const p=document.getElementById('ps'+i);
+    p.classList.remove('active','done');
+    if(i<n) p.classList.add('done'); else if(i===n) p.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function v1(){
+  const t=T[lang]; let ok=true;
+  ['fn','fa','fb','fe'].forEach(id=>{document.getElementById(id).classList.remove('input-error');});
+  ['en','ea','eb','ee'].forEach(id=>{document.getElementById(id).classList.remove('show');});
+  const name=document.getElementById('fn').value.trim();
+  const apell=document.getElementById('fa').value.trim();
+  const birth=document.getElementById('fb').value;
+  const email=document.getElementById('fe').value.trim();
+  if(!name){showE('fn','en',t.ename);ok=false;}
+  if(!apell){showE('fa','ea',t.eapell);ok=false;}
+  if(!birth){showE('fb','eb',t.ebirth);ok=false;}
+  if(!email||!email.includes('@')){showE('fe','ee',t.eemail);ok=false;}
+  return ok;
+}
+
+function v2(){
+  const t=T[lang];
+  ans.forEach((a,i)=>{const md=document.getElementById('md'+i);if(md)dets[i]=md.value;});
+  if(ans.some(a=>a===null)){alert(t.emed);return false;}
+  return true;
+}
+
+function v3(){
+  return document.getElementById('sig-srv-confirmed').classList.contains('show')&&
+         document.getElementById('sig-rgpd-confirmed').classList.contains('show');
+}
+
+function showE(inp,err,msg){
+  document.getElementById(inp).classList.add('input-error');
+  const e=document.getElementById(err);e.textContent=msg;e.classList.add('show');
+}
+
+function updateSum(){
+  const t=T[lang];
+  const nm=(document.getElementById('fn').value||'')+' '+(document.getElementById('fa').value||'');
+  const rows=[
+    [t.sname,nm.trim()||'—'],
+    [t.sbirth,document.getElementById('fb').value||'—'],
+    [t.slevel,document.getElementById('fl').value||'—'],
+    [t.semail,document.getElementById('fe').value||'—'],
+    [t.sphone,document.getElementById('fp').value||'—'],
+    [t.sdni,dniPhotoData?t.sdniok:t.sdnino],
+  ];
+  const yc=ans.filter(a=>a===true).length;
+  const el=document.getElementById('sumbox');
+  el.innerHTML=rows.filter(r=>r[1]&&r[1]!=='—').map(r=>{
+    const style=r[0]===t.sdni&&!dniPhotoData?'color:var(--yellow)':'';
+    return `<div class="summary-row" style="${style}"><strong>${r[0]}</strong><span>${r[1]}</span></div>`;
+  }).join('')+
+    (yc>0?`<div class="summary-row" style="color:var(--yellow)"><strong>⚠️</strong><span>${yc} ${lang==='es'?'respuesta(s) médica(s) positiva(s)':lang==='en'?'positive medical answer(s)':lang==='fr'?'réponse(s) médicale(s) positive(s)':'medizinische JA-Antwort(en)'}</span></div>`:'');
+}
+
+async function enviar(){
+  const t=T[lang];
+  if(!document.getElementById('faccept').checked){alert(t.eaccept);return;}
+  const btn=document.getElementById('bsend');
+  btn.disabled=true; btn.textContent=t.sending;
+  const hn=dets.map((d,i)=>ans[i]===true&&d?`Q${i+1}: ${d}`:'').filter(Boolean).join(' | ');
+  const payload={
+    name:document.getElementById('fn').value.trim(),
+    apellidos:document.getElementById('fa').value.trim(),
+    email:document.getElementById('fe').value.trim(),
+    phone:document.getElementById('fp').value.trim(),
+    dni:document.getElementById('fd').value.trim(),
+    birthdate:document.getElementById('fb').value,
+    dive_level:document.getElementById('fl').value,
+    health_ok:!ans.some(a=>a===true),
+    health_notes:hn,
+    med_answers:ans.map((a,i)=>({q:i+1,answer:a?'yes':'no',detail:dets[i]||''})),
+    sig_services:_sigData.srv||'',
+    sig_data:_sigData.rgpd||'',
+    dni_photo:dniPhotoData,
+    tit_photo:titPhotoData,
+    seg_photo:segPhotoData,
+    language:lang, via:'external_form'
+  };
+  try{
+    const r=await fetch('https://script.google.com/macros/s/AKfycbw0Aq3J_2WORgnaSVSalEv0QroFZEog1pD_ht_G8QDnmab2BsNFf18xS6CfXBU8hrjs4A/exec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok){
+      document.getElementById('step'+step).classList.remove('active');
+      step=6;
+      document.getElementById('step6').classList.add('active');
+      for(let i=1;i<=5;i++){const p=document.getElementById('ps'+i);p.classList.remove('active');p.classList.add('done');}
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {
+      alert(d.error||'Error al enviar');
+      btn.disabled=false; btn.textContent=t.send;
+    }
+  }catch(e){
+    alert('Error de conexión. Verifica que la app está encendida.');
+    btn.disabled=false; btn.textContent=t.send;
+  }
+}
+
+window.addEventListener('load',()=>{buildMed();});
+</script>
+</body>
+</html>
